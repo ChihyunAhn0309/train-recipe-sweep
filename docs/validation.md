@@ -31,6 +31,8 @@ Separate agent sessions reviewed and forward-tested the implementation during de
 
 ## What remains target-specific
 
+The source-recipe reconciliation addition received a separate review with **29 independent scenarios per interpreter** on Windows Python 3.11 and 3.13, plus both documented example commands on each. The review found and verified fixes for two false passes: excluded techniques remaining active, and Full FT configs being labeled as LoRA coverage. The checker now validates explicit exclusion assertions and matching method identities. These checks establish declared configuration consistency, not historical source completeness or real trainer behavior.
+
 **Actual GPU/CUDA training has not been validated for this generic controller release.** Neither have model-specific head/adapter correctness, training throughput/VRAM, mixed precision, real model checkpoint/resume equivalence or distributed execution. CPU tests and document reconstruction cannot establish those properties.
 
 The generic skill is a workflow and a set of control helpers, not a universal pretrained-model trainer. Each complete model-specific plan must supply its actual trainer/worker, pinned dependencies, download and GT audit code, objective/evaluator, search definition, profile procedures and consistent checkpoint/resume implementation.
