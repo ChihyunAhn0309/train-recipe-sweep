@@ -4,7 +4,7 @@ This page distinguishes reproducible software checks from target-specific traini
 
 ## Reproducible checks
 
-The first public version contains **95 unittest cases**: 66 across the sweep guard, runtime guard and portable bundle, plus 29 controller cases. Before publication, the integrated suite passed on Windows with Python 3.11 and 3.13. The GitHub Actions matrix runs the same suite on Windows and Ubuntu with both interpreters; consult the linked run for actual platform results.
+The first public version contains **95 unittest cases**: 66 across the sweep guard, runtime guard and portable bundle, plus 29 controller cases. Before publication, the integrated suite passed locally on Windows with Python 3.11 and 3.13. The [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) then passed on **Ubuntu and Windows with both Python 3.11 and 3.13**, including the documented CPU demo and repository checks. The workflow continues to test that four-job matrix on pushes and pull requests.
 
 ```sh
 python -B -m unittest discover -s scripts -p "test_*.py" -v
