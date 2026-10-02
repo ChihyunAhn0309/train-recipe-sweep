@@ -6,7 +6,7 @@
 
 **Turn a model and dataset into a traceable Full FT or LoRA recipe search.**
 
-A Codex skill for researching checkpoints and training baselines, auditing ground truth, adapting task heads, and planning or running bounded sweeps. Each requested LoRA rank gets its own baseline and search. A plan written without GPUs must carry its executable code and resolve hardware-dependent choices on the target machine.
+A Codex skill for researching checkpoints and training baselines, auditing ground truth, adapting task heads, and planning or running bounded sweeps. Each requested LoRA rank gets its own baseline and search. An executable handoff written without GPUs carries its code and resolves hardware-dependent choices on the target. A specification-only request can finish with implementation and GPU checks explicitly pending.
 
 [Install](#install) · [Use the skill](#use-the-skill) · [CPU demo](#try-the-cpu-demo) · [Validation](docs/validation.md) · [Controller protocol](references/study-controller.md)
 
@@ -34,6 +34,12 @@ A Codex skill for researching checkpoints and training baselines, auditing groun
 If the original recipe used multi-scale training, the agent must recover its sizes/distribution, cadence, GT transforms and phase schedule. For each method/rank, it records whether to inherit, adapt, compare enabled/disabled, or omit it with a specific reason. Applicable techniques with uncertain transfer receive on/off comparisons within budget; fixed evaluation/TTA settings remain separate. A missing local implementation does not silently become an excluded technique.
 
 The [recipe coverage checker](scripts/recipe_coverage.py) detects unmapped source fields, missing method decisions and declared candidates absent from actual compiled configs. Try the [runnable multi-scale coverage example](examples/recipe-coverage/README.md). Actual pipeline behavior still needs smoke checks; JSON coverage alone cannot prove a historical recipe was fully recovered. See the [reconciliation contract](references/recipe-reconciliation.md).
+
+### Evidence before performance claims
+
+Follow [scientific validation](references/scientific-validation.md) when comparing recipes. Published ranges and code defaults are not necessarily the winning official recipe. Evaluate a source-derived target baseline, then compare baseline and finalists on matched fresh seeds. Keep exploratory winning-seed scores outside confirmation aggregates. Best observed, confirmed, source-reproduced and GPU-verified are separate claims.
+
+For later-stage candidates, [study_extend.py](scripts/study_extend.py) retains completed anchors, results and cumulative costs. The model-specific adapter freezes selection and generates trials; the helper does not select winners or authorize a larger budget.
 
 ## Install
 
@@ -121,6 +127,7 @@ Tests use temporary directories and real child processes. They exercise malforme
 | [runtime_guard.py](scripts/runtime_guard.py) | Asset checks, output identity and persistent local execution budgets. |
 | [plan_bundle.py](scripts/plan_bundle.py) | Pack, verify and reconstruct a document containing hashed UTF-8 files; never executes them. |
 | [study_controller.py](scripts/study_controller.py) | Local SQLite claims, single-device workers, anchor gating, physical-device accounting and bounded recovery. |
+| [study_extend.py](scripts/study_extend.py) | Append-only stage transitions retaining anchors, results and cumulative budgets. |
 | [fake_worker.py](scripts/fake_worker.py) | Synthetic CPU protocol fixture for testing only. |
 
 The controller supports **one host and one physical GPU per worker**, with measured packing for independent workers. A real project adapter must implement training, task-specific evaluation/convergence, consistent checkpoints and resume state. Multi-GPU trials and clusters need a suitable project scheduler.
@@ -147,6 +154,7 @@ flowchart TD
 - [Source recipe reconciliation and technique ablations](references/recipe-reconciliation.md)
 - [Model heads and LoRA adaptation](references/model-adaptation.md)
 - [Search spaces and stopping](references/search-and-stopping.md)
+- [Baseline comparability, confirmation and evidence levels](references/scientific-validation.md)
 - [GPU execution](references/execution.md) and [acceptance](references/gpu-acceptance.md)
 - [Portable plan contract](references/portable-plan.md)
 - [Guard tools](references/guard-tool.md) and [controller protocol](references/study-controller.md)

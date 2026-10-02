@@ -97,6 +97,8 @@ def validate_policy(policy):
     for key in ("window", "confirmations", "val_patience", "eval_every_steps",
                 "hard_cap_step"):
         _integer(policy[key], key, 3 if key == "window" else 1)
+    if policy["hard_cap_step"] % policy["eval_every_steps"]:
+        raise ValueError("hard_cap_step must be a multiple of eval_every_steps")
     for key in ("min_step", "warmup_end_step", "schedule_guard_step"):
         _integer(policy[key], key)
         if policy[key] > policy["hard_cap_step"]:

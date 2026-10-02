@@ -91,6 +91,32 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(len(result['attempts']), 1)
         self.assertEqual(len(result['trials'][0]['id']), 64)
 
+    def test_utf8_trial_identity_matches_fingerprint_helper_and_ascii_is_unchanged(self):
+        trial = self.trial()
+        ascii_config = copy.deepcopy(trial['config'])
+        ascii_digest = hashlib.sha256(json.dumps(
+            ascii_config, sort_keys=True, separators=(',', ':'),
+            ensure_ascii=True, allow_nan=False).encode('utf-8')).hexdigest()
+        self.assertEqual(digest(ascii_config), ascii_digest)
+
+        trial['config']['head'] = {'labels': ['고양이', '개', '🦊']}
+        # Independent oracle for the UTF-8 fingerprint contract; keep this test
+        # portable with the controller fixture even without sweep_guard.py.
+        fingerprint = hashlib.sha256(json.dumps(
+            trial['config'], sort_keys=True, separators=(',', ':'),
+            ensure_ascii=False, allow_nan=False).encode('utf-8')).hexdigest()
+        trial['trial_id'] = fingerprint
+        inferred = copy.deepcopy(trial)
+        inferred.pop('trial_id')
+        self.study([trial, inferred])
+        loaded = load_study(self.study_path)
+        self.assertEqual(len(loaded['trials']), 1)
+        self.assertEqual(loaded['trials'][0]['trial_id'], fingerprint)
+        result = self.successful()
+        self.assertEqual(result['trials'][0]['id'], fingerprint)
+        self.assertEqual(result['trials'][0]['state'], 'saturated')
+        self.assertEqual(len(self.successful()['attempts']), 1)
+
     def test_resume_requires_hashed_complete_state_and_retains_attempts(self):
         self.study([self.trial(behavior='interrupt_once')])
         first = self.successful()

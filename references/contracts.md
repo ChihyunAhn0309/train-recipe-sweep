@@ -27,10 +27,12 @@ Generate a resolved `study.yaml` (or project-native equivalent) with these secti
 | convergence | Family definition, anchor configs, eval cadence, numerical plateau policy, schedule guards |
 | resources | Observed hardware/allocation, budget, profiling matrix, packing plan, retry and retention policy |
 | execution | Environment lock, exact entrypoint/args, scheduler/launch/resume and metric contract |
-| selection | Finalists/seeds, validation-only comparison, final test policy |
+| selection | Frozen finalist IDs/evidence, fresh paired baseline/finalist seeds, aggregation/tie and failed-run policy, validation-only comparison, final test policy |
 | limitations | Unknown/proposed values, blocked access, unsearched space and estimates |
 
 Store source-linked baseline configs before resolving framework defaults. Every launch must dump the fully resolved configuration including defaults, actual parameter group LRs and selector expansion. Unknown required values block that launch, not unrelated work.
+
+Include the [scientific comparison contract](scientific-validation.md): baseline kind/deviations, matched context/evaluator hashes, fresh confirmation seeds, selection freeze and evidence-level report fields. Baseline evaluation, saturation calibration, best observed candidate, confirmation and official reproduction are separate states. A source candidate grid or code default is not its winning historical recipe.
 
 Attach the [source recipe reconciliation ledger](recipe-reconciliation.md), resolved source inventories/hashes, evidence locations and per-method on/off decisions. Every source field needs a disposition; source-enabled techniques cannot vanish from the target baseline without a recorded reason. Include compiled candidate coverage and later actual completed/failed/not-run coverage. Run `recipe_coverage.py` after compiling target configs, with pipeline smoke evidence showing that the trainer consumes the declared settings.
 
@@ -46,7 +48,7 @@ Registry fields: trial ID, immutable config path/hash, family, roles (including 
 
 ## Outputs in plan mode
 
-When only the skill and document will be transferred, the [portable-plan contract](portable-plan.md) is mandatory: embed a complete executable file bundle with scientific specification, conditional target checks and acquisition metadata. Reconstruct and test it in a fresh directory. Add `portable_plan_complete` and its reconstruction evidence; do not set target verification or launch readiness from author-side CPU tests. A plan with missing trainer/controller implementation may be a useful draft but cannot satisfy a request for a complete executable handoff.
+For a requested executable handoff using only the skill and document, the [portable-plan contract](portable-plan.md) is mandatory: embed a complete executable bundle with scientific specification, conditional target checks and acquisition metadata. Reconstruct and test it in a fresh directory. Record `portable_plan_complete` with evidence; author-side CPU checks cannot set target verification or launch readiness. Missing trainer/controller implementation cannot satisfy a complete executable handoff. For a specification-only request, use `scientific_specification_complete` and mark implementation/target readiness pending; document format or CPU-only authoring does not require an executable bundle. The list below applies within the requested deliverable scope.
 
 1. Human-readable model/checkpoint choice and evidence table; dataset/split audit and unresolved issues.
 2. Source, Full FT and per-rank LoRA baselines with value provenance and exact head/adapter mapping.

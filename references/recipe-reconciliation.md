@@ -15,7 +15,7 @@ Inspect the input pipeline and actual implementation, not just optimizer setting
 - Optimizer/parameter groups, LR scaling and layer decay, schedule/warmup, effective batch/accumulation, exposure, clipping, loss components/matching weights, auxiliary losses, normalization/freeze phases, EMA and precision.
 - Evaluation resize/crop, thresholds, matching/NMS/decoding, checkpoint selection, EMA evaluation and test-time augmentation (TTA). **Training multi-scale augmentation and multi-scale evaluation/TTA are separate factors.** Do not change the official validation protocol while comparing training recipes.
 
-Verify these behaviors against a resolved configuration dump and inspected pipeline/callback code. In execution mode log the instantiated pipeline and sample representative transformed inputs/GT. A parser accepting `multi_scale=true` is not evidence that the trainer uses it. Compare observed dimensions/draw frequency with the specified distribution and audit GT alignment. During CPU-only planning, supply these checks in the executable handoff and distinguish checks actually run from deferred GPU profiling.
+Verify these behaviors against a resolved configuration dump and inspected pipeline/callback code. In execution mode log the instantiated pipeline and sample transformed inputs/GT. A parser accepting `multi_scale=true` does not prove the trainer uses it. Compare observed dimensions/frequency with the declared distribution and audit GT alignment. A requested executable handoff includes these checks and distinguishes actual checks from deferred GPU profiling. A specification-only request defines acceptance criteria while leaving unrequested implementation pending.
 
 ## Mandatory source-to-target decision ledger
 

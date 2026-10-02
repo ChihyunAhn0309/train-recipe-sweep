@@ -54,7 +54,7 @@ python scripts/sweep_guard.py plateau --policy stop-policy.json --metrics metric
 python -m unittest discover -s scripts -p "test_*.py"
 ```
 
-JSON arrays also work. Missing, duplicate, out-of-order or off-cadence evaluations fail rather than silently shortening patience. A different cadence requires a separate documented policy/controller adaptation. Do not interpolate missing validation values. Extra metric fields are allowed.
+JSON arrays also work. Missing, duplicate, out-of-order or off-cadence evaluations fail rather than silently shortening patience. `hard_cap_step` must be an integer multiple of `eval_every_steps`; otherwise the terminal cap cannot be observed on this helper's exact cadence and policy validation rejects it before training. Choose and freeze an aligned cap within the authorized exposure bound. Outer-controller time/resource limits still apply independently. A different cadence requires a separate documented policy/controller adaptation. Do not interpolate missing validation values. Extra metric fields are allowed.
 
 The algorithm compares two adjacent W-point windows at K consecutive endpoints, requiring small median change and fitted absolute trend in each window. Median absolute deviation of residuals after removing the fitted linear trend gates excessive noise; it is not a statistical confidence interval. All windows are after the maximum of min_step, warmup_end_step and schedule_guard_step. Validation patience uses cumulative improvement relative to the last meaningful best, while `best_step` tracks the actual raw best independently.
 

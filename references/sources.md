@@ -1,6 +1,6 @@
 # Primary starting sources
 
-Checked 2026-10-02. Verify the installed version and current official material at use time. These generic sources do not replace model/task-specific research. Recipe ranges, budgets and plateau thresholds in this skill are design proposals, not claims that these publications prove universal settings.
+Core sources checked 2026-10-02; selection-bias and reference-search sources added 2026-10-03. Verify versions and current official material at use time. These generic sources do not replace model/task research. Recipe ranges, budgets and plateau thresholds are design proposals, not publication-proven universal settings.
 
 | Source | Relevant basis |
 |---|---|
@@ -16,5 +16,7 @@ Checked 2026-10-02. Verify the installed version and current official material a
 | [PyTorch saving and loading](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html) | Model and optimizer state for continuing training |
 | [PyTorch performance tuning](https://docs.pytorch.org/tutorials/recipes/recipes/tuning_guide.html) | Data, kernel, memory and distributed execution tuning |
 | [Hub download guide](https://huggingface.co/docs/huggingface_hub/guides/download) | Version-pinned downloads and file selection |
+
+For performance claims, see [Cawley and Talbot on selection bias](https://www.jmlr.org/papers/v11/cawley10a.html) and [Bergstra and Bengio on random search](https://www.jmlr.org/papers/v13/bergstra12a.html). These motivate independent evidence and reference search comparisons; they do not prescribe the skill's engineering seed counts or margins.
 
 Do not infer an exact checkpoint recipe from these general documents. Every selected checkpoint and dataset needs its own verified sources, immutable identifiers and evidence ledger.

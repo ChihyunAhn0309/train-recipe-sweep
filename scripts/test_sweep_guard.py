@@ -100,6 +100,14 @@ class PlateauTests(unittest.TestCase):
         self.assertTrue(result["right_censored"])
         self.assertNotEqual(result["status"], "saturated")
 
+    def test_hard_cap_must_be_reachable_on_exact_evaluation_cadence(self):
+        for cap in (5, 95):
+            with self.subTest(cap=cap), self.assertRaisesRegex(
+                    ValueError, "hard_cap_step must be a multiple of eval_every_steps"):
+                plateau_decision(policy(
+                    hard_cap_step=cap, eval_every_steps=10, min_step=0,
+                    warmup_end_step=0, schedule_guard_step=0), history(1))
+
     def test_observed_plateau_at_cap_is_valid(self):
         self.assertEqual(plateau_decision(policy(hard_cap_step=3000), history())["status"],
                          "saturated")

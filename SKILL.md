@@ -46,7 +46,7 @@ Read [model adaptation and LoRA](references/model-adaptation.md).
 
 Read [search and stopping](references/search-and-stopping.md), then build the study using [contracts](references/contracts.md).
 
-Preserve the evidence chain: checkpoint-generation recipe → task-adapted Full FT baseline → model-specific LoRA baselines. Evaluate baselines on the actual task. Do not claim original-paper reproduction without reproducing the original setting.
+Preserve the evidence chain: checkpoint-generation recipe → task-adapted Full FT baseline → model-specific LoRA baselines. Evaluate baselines on the actual task. Apply [scientific comparison and confirmation](references/scientific-validation.md): distinguish published search ranges/code defaults from winning source recipes, and source-equivalent, source-derived and proposed baselines. Matching LRs or successful software tests do not establish official reproduction or optimization quality.
 
 Classify every relevant axis as `sweep / fixed / conditional / excluded`, with bounds, rationale, budget and interactions. Cover LR, head LR, effective batch, optimizer, weight decay, scheduler, warmup, training length, regularization/augmentation, and LoRA targets/alpha/dropout. Do not promise infinitely many values or all combinations. Expand a winning boundary within the authorized budget.
 
@@ -60,7 +60,7 @@ For each model × data split × method/rank × important scheduler/batch family,
 - An LR too small to begin learning is not saturation. Check learning progress, gradients/updates, completed warmup, pending scheduler changes, training loss and validation trends together.
 - Use observed saturation steps/epochs to initialize other trial horizons, not as a mandatory ceiling. Extend improving trials within budget; stop earlier when the declared criteria are satisfied.
 - If a cap arrives before convergence, report `budget_exhausted` or `right_censored`, not a saturation epoch. Add anchors when introducing a lower LR.
-- Preserve the historical LR trajectory. Changing a cosine/one-cycle horizon that determines previous LR values creates a different trial.
+- Preserve the historical LR trajectory. Changing a linear-decay, cosine or one-cycle horizon that determines previous LR values creates a different trial.
 
 Evaluate convergence at every evaluation. Use task-specific absolute and relative change criteria, including near-zero losses. The standard-library [sweep_guard.py](scripts/sweep_guard.py) helps with identities and conservative plateau decisions. It is not a trainer or GPU scheduler: configure numerical thresholds and external diagnostics before integrating it. Read the [guard guide](references/guard-tool.md).
 
@@ -68,7 +68,7 @@ Evaluate convergence at every evaluation. Use task-specific absolute and relativ
 
 Read [execution and reproducibility](references/execution.md). Every execution must complete [GPU target acceptance](references/gpu-acceptance.md), repair failures, and revalidate before long sweeps. This also applies when transferring a CPU-authored plan. Without GPUs, defer measurements; leave explicit decisions to be resolved from real measurements at execution time.
 
-For a document-only handoff, follow [portable plans](references/portable-plan.md). Include required code, configuration, acquisition information and launch/recovery commands. Reconstruct from the document alone in a fresh directory. A document depending on the previous conversation, author-local paths or an absent trainer/controller is not a complete executable handoff. Plan completeness and GPU verification are separate states.
+For an executable document-only handoff, follow [portable plans](references/portable-plan.md). Include required code, configuration, acquisition information and launch/recovery commands. Reconstruct from the document alone in a fresh directory. A document depending on prior conversation, author-local paths or an absent trainer/controller is not a complete executable handoff. If the user asks only for a scientific specification/review, honor that scope and mark executable implementation pending; CPU-only authoring does not itself require building a trainer. Plan completeness and GPU verification are separate states.
 
 Maximize useful samples/tokens per second and completed trials per GPU-hour on allocated devices while pursuing high utilization and useful VRAM occupancy. Measure peak memory with headroom for variability. Do not use dummy allocations to fill VRAM or silently change batch semantics. Compare independent packing for small trials with validated distributed execution for large trials. Never terminate unrelated work on shared servers.
 
@@ -78,7 +78,7 @@ Verify the actual Python interpreter and record readiness separately for design,
 
 ## 7. Deliver the best recipe and limits for each method
 
-Compare validation improvements over baseline, seed variability, trainable parameter counts, best/stop epochs, termination reasons, GPU time, peak VRAM and throughput. Report Full FT and every requested LoRA rank separately. Select using validation; evaluate test only after selection is complete.
+Freeze finalist recipes and selection evidence before fresh-seed confirmation. Compare baseline and finalists on the same reserved seed list; keep exploratory winning-seed scores outside the confirmation aggregate. Compare validation improvements, seed variability, trainable parameter counts, best/stop epochs, termination reasons, GPU time, peak VRAM and throughput. Report Full FT and every requested LoRA rank separately. Select using validation; evaluate test only after selection is complete. Use [scientific validation](references/scientific-validation.md) evidence fields so incomplete calibration/confirmation stays visible.
 
 Plans include execution order, conditional spaces, time/storage estimates, recovery, concrete commands and unresolved assumptions. Execution results include winning configurations/checkpoints, reproduction commands, environment lock, complete trial registry, source/data manifests, train/validation curves and unsearched regions. Distinguish file creation, dry-run validation and actual GPU execution.
 

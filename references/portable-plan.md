@@ -1,6 +1,6 @@
 # A plan document that can be executed on another machine
 
-Use when planning without GPU or whenever the user will move only the plan document and this skill to a GPU environment. Deliver a human-readable plan with a self-contained embedded file bundle, produced and checked by `scripts/plan_bundle.py`. An optional ZIP is a convenience; the document itself must contain the source/config files needed for reconstruction.
+Use when the user requests an executable handoff, including moving only the plan document and this skill to a GPU environment. Deliver a readable plan with a self-contained file bundle, produced and checked by `scripts/plan_bundle.py`. An optional ZIP is a convenience; the document must contain reconstructable source/config files. For a request limited to scientific specification, feasibility or review, honor that scope and mark executable implementation/target checks pending. Absence of a GPU alone does not select the deliverable type.
 
 ## Content contract
 
@@ -12,6 +12,7 @@ Embed these runnable resources, or exact pinned public sources plus a checked ac
 - Resolved source recipe manifests/original evidence, the [per-method decision ledger](recipe-reconciliation.md), `recipe_coverage.py`, compiled candidate coverage, and augmentation/pipeline smoke checks. Preserve multi-scale distributions/cadence, enabled/disabled controls and justified exclusions in the transferred document.
 - Experiment config producer with environment-independent scientific definitions and explicit target-resolution fields. Generate final semantic trial IDs only after target defaults, backend/precision/layout and code/environment hashes are resolved.
 - Controller/worker adapter with real atomic dispatch, resume/reuse, budget admission/accounting and report aggregation. A list of responsibilities for an absent controller is not a complete execution package.
+- Model-specific stage generator, frozen-selection artifact, paired fresh-seed baseline/finalist confirmation, and `study_extend.py` integration when using the bundled controller. Test stage-two reuse without resetting costs. Plans requiring budget, code, old-cap or environment changes need an explicit tested migration beyond the bounded append-only helper.
 - Real device smoke and export/resume checks; profiling and telemetry; finite layout-selection rules; prepare/verify/profile/run/resume commands.
 - Dependency contract that can select an appropriate target CUDA build. Do not freeze the author's CPU-only Torch wheel as the GPU requirement. Pin and save the actual target environment after resolving compatible versions and checking numerics.
 

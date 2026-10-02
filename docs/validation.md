@@ -4,7 +4,7 @@ This page distinguishes reproducible software checks from target-specific traini
 
 ## Reproducible checks
 
-The current suite contains **110 unittest cases**: the original 95 guard/bundle/controller cases plus 15 source-recipe coverage cases. The original suite passed locally on Windows with Python 3.11 and 3.13, then passed the [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) on **Ubuntu and Windows with both Python 3.11 and 3.13**, including the documented CPU demo and repository checks. The workflow continues to test the current suite in that four-job matrix on pushes and pull requests; the README badge links to current results.
+The current suite contains **130 unittest cases**: the previous 110 cases plus Unicode identity interoperability, aligned stopping caps, and 18 staged-extension cases. The original suite passed the [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) on **Ubuntu and Windows with Python 3.11 and 3.13**. The workflow tests the current suite, CPU demo and repository checks in that four-job matrix; the README badge links to current results. A historical run is evidence for its own commit, not later changes.
 
 ```sh
 python -B -m unittest discover -s scripts -p "test_*.py" -v
@@ -20,6 +20,7 @@ python tools/run_cpu_demo.py --output ./demo-run
 | Assets and budgets | Actual loader paths, hash/size checks, interrupted state and accumulated cost persistence. |
 | Document transport | Reconstructable content, hashes, portable names, traversal/collision rejection, literal argv. |
 | Controller | Atomic claims, anchor gating, confirmations, valid result reuse, concurrent device ownership, physical accounting, bounded stop/resume. |
+| Stage extension | Strict append-only plans, retained anchor/results/costs, immutable budget caps, active-work rejection, interruption recovery across SQLite/marker boundaries, idempotence and refreshed GPU acceptance scope. |
 | Invalid results | Typed finite metrics, objective agreement, checkpoint/metrics integrity, malformed resume isolation. |
 | GPU gate schema | Missing, stale and incompatible evidence rejected; source/config/device scope changes invalidate acceptance. |
 
@@ -30,6 +31,20 @@ The CPU demo launches real subprocesses with synthetic outputs. Its scores and d
 Separate agent sessions reviewed and forward-tested the implementation during development. Their feedback led to regression fixes for bundle path collisions, Python option-like entrypoints, malformed result isolation, objective mismatches, confirmation-role aliasing, device-probe races and controller-source acceptance scope. The final independent portable checks covered 18 scenarios per interpreter; the controller checks covered 13 per interpreter on Windows Python 3.11 and 3.13. These are additional development observations, not third-party certification. The public regression suite is the reproducible release check; private machine paths and large raw experiment artifacts are not included.
 
 ## What remains target-specific
+
+### Final independent review on 2026-10-03
+
+Three separate agent sessions performed a scientific evidence audit, a blind planning request with primary-source research, and an adversarial code review. Their findings led to these changes:
+
+- Fresh baseline/finalist seeds are paired; exploratory winning seeds stay outside the confirmation aggregate. Official reproduction, source-derived baseline comparison, best observed candidates and seed stability have distinct evidence requirements.
+- `study_extend.py` implements the search-to-finalist transition while retaining the same registry, anchors, results and cumulative spending. Eighteen regressions cover its operational contract. Another reviewer independently checked 19 scenarios on Python 3.13 Windows, including three stages, two methods packed on a synthetic device, failed-candidate preservation and post-commit recovery.
+- UTF-8 canonical trial fingerprints agree across helpers for non-ASCII configurations. ASCII identities remain unchanged; existing non-ASCII bound outputs need explicit migration or preservation under their original controller, not silent reinterpretation.
+- The plateau helper rejects a hard cap that cannot be reached on its exact evaluation cadence. Total-horizon-dependent linear decay is explicitly included in schedule identity rules.
+- Scientific-specification requests do not accidentally require building an executable trainer. Complete executable handoffs still require implementation and clean-room reconstruction.
+
+These reviews found no remaining actionable issue within the rechecked scope after repairs. Separate agent review is not third-party certification or proof that arbitrary future studies will work. The extension fixture is synthetic, and a `confirmation` role alone does not certify independent seeds or a correctly frozen selection; the model-specific adapter supplies those semantics.
+
+An earlier local real-model CPU demonstration used BERT-Tiny, 512 SST-2 training rows, 872 validation rows, one seed and nine LR trials. A later checkpoint re-evaluation reproduced all nine saved accuracies. Its best observed Full FT/LoRA16/LoRA32 validation scores were 74.31%/71.10%/71.90%; all original trials were capped without observed saturation. That experiment does not establish source-recipe reproduction, independent confirmation, search-algorithm quality, or validation of every later controller change. Large data/weight/checkpoint artifacts are not distributed here.
 
 The source-recipe reconciliation addition received a separate review with **29 independent scenarios per interpreter** on Windows Python 3.11 and 3.13, plus both documented example commands on each. The review found and verified fixes for two false passes: excluded techniques remaining active, and Full FT configs being labeled as LoRA coverage. The checker now validates explicit exclusion assertions and matching method identities. These checks establish declared configuration consistency, not historical source completeness or real trainer behavior.
 

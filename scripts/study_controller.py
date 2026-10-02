@@ -22,6 +22,7 @@ VERSION = 1
 TERMINAL = {'completed', 'saturated', 'right_censored', 'budget_exhausted',
             'interrupted', 'pruned', 'failed'}
 SUCCESS = {'completed', 'saturated'}
+EXTENSION_JOURNAL = 'study-extension.pending.json'
 
 
 def unique(pairs):
@@ -38,7 +39,9 @@ def reject_constant(value):
 
 
 def canonical(value):
-    return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
+    # Match sweep_guard.trial_id: canonical JSON is encoded directly as UTF-8.
+    return json.dumps(value, sort_keys=True, separators=(',', ':'),
+                      ensure_ascii=False, allow_nan=False)
 
 
 def read_json(path):
@@ -392,19 +395,39 @@ CREATE TABLE segments(id INTEGER PRIMARY KEY,start REAL NOT NULL,end REAL NOT NU
 
 
 class Registry:
-    def __init__(self, study):
+    def __init__(self, study, extension_recovery=None):
         self.study = study
         self.root = Path(study['output_root'])
         self.path = self.root / 'registry.sqlite3'
         self.root.mkdir(parents=True, exist_ok=True)
         marker = self.root / 'study-identity.json'
+        journal = self.root / EXTENSION_JOURNAL
+        allowed_hashes = {study['_hash']}
+        if journal.exists():
+            # Only study_extend may bridge the marker/SQLite commit boundary.
+            # It validates the complete fixed old/new plans and this journal;
+            # Registry still validates SQLite against exactly `study` below.
+            if extension_recovery is None or canonical(read_json(journal)) != canonical(extension_recovery):
+                raise ValueError('Pending study extension; retry the same study_extend command')
+            record = extension_recovery.get('record')
+            if (not isinstance(record, dict) or extension_recovery.get('sha256') != digest(record)
+                    or record.get('kind') != 'append_only_study_extension'):
+                raise ValueError('Invalid study extension recovery journal')
+            allowed_hashes = {record.get('old_study_hash'), record.get('new_study_hash')}
+            if study['_hash'] not in allowed_hashes:
+                raise ValueError('Study extension recovery identity mismatch')
+        elif extension_recovery is not None:
+            raise ValueError('Study extension recovery requires its pending journal')
         if marker.exists():
-            if read_json(marker) != {'schema_version': VERSION, 'study_hash': study['_hash']}:
+            identity = read_json(marker)
+            if not any(identity == {'schema_version': VERSION, 'study_hash': value} for value in allowed_hashes):
                 raise ValueError('Study output identity mismatch')
             if not self.path.is_file():
                 raise ValueError('Bound study lost registry/accounting; explicit recovery required')
             fresh = False
         else:
+            if extension_recovery is not None:
+                raise ValueError('Study extension cannot recreate a missing identity marker')
             if any(p.name != '.controller.lock' for p in self.root.iterdir()):
                 raise ValueError('Refusing to adopt nonempty unbound study output')
             atomic_json(marker, {'schema_version': VERSION, 'study_hash': study['_hash']})
