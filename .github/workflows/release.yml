@@ -1,0 +1,34 @@
+name: Release package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+      - name: Verify tagged source
+        run: |
+          python tools/check_repository.py
+          python -B -m unittest discover -s scripts -p "test_*.py" -v
+      - name: Build installable archive and checksum
+        run: |
+          git archive --format=zip --prefix=train-recipe-sweep/ --output=train-recipe-sweep.zip HEAD
+          sha256sum train-recipe-sweep.zip > train-recipe-sweep.zip.sha256
+          unzip -t train-recipe-sweep.zip
+      - name: Attach verified release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" train-recipe-sweep.zip train-recipe-sweep.zip.sha256 --repo "$GITHUB_REPOSITORY"
