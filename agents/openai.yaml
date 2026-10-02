@@ -1,0 +1,4 @@
+interface:
+  display_name: "Train Recipe Sweep"
+  short_description: "Find and run evidence-based Full FT and LoRA sweeps"
+  default_prompt: "Use $train-recipe-sweep to verify my model and dataset, then plan or run separate Full FT and LoRA recipe searches on the target GPUs."

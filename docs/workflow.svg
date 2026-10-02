@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="920" viewBox="0 0 1440 920" role="img" aria-labelledby="title desc">
+  <title id="title">Train Recipe Sweep: evidence to execution</title>
+  <desc id="desc">Verify checkpoint and ground truth, create an executable portable plan, and pass six measured GPU acceptance gates. Then search Full FT and each LoRA rank separately, reusing minimum learning rate anchors, before validation selection and final test evaluation. CPU checks do not prove GPU readiness.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#50647e"/></marker>
+    <style>
+      text { font-family: Inter, Segoe UI, Arial, sans-serif; fill: #172b46; }
+      .label { font-size: 21px; font-weight: 700; letter-spacing: 2px; }
+      .heading { font-size: 30px; font-weight: 700; }
+      .body { font-size: 23px; }
+      .small { font-size: 21px; }
+      .arrow { fill: none; stroke: #50647e; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1440" height="920" rx="24" fill="#f3f6fa"/>
+  <text x="56" y="70" font-size="42" font-weight="750">Evidence → execution</text>
+  <text x="56" y="112" class="body" fill="#50647e">A portable plan now. Measured decisions on the target GPU.</text>
+
+  <rect x="56" y="155" width="410" height="236" rx="18" fill="#ffffff" stroke="#c3d4e6" stroke-width="2"/>
+  <rect x="56" y="155" width="410" height="8" rx="4" fill="#3575b6"/>
+  <text x="82" y="202" class="label" fill="#3575b6">01 / VERIFY</text>
+  <text x="82" y="244" class="heading">Model + data evidence</text>
+  <text x="82" y="287" class="body">Checkpoint and source recipe</text>
+  <text x="82" y="322" class="body">GT, metadata and split audit</text>
+  <text x="82" y="357" class="body">Task head and LoRA references</text>
+
+  <path d="M 468 275 H 502" class="arrow"/>
+  <rect x="512" y="155" width="410" height="236" rx="18" fill="#ffffff" stroke="#c3d4e6" stroke-width="2"/>
+  <rect x="512" y="155" width="410" height="8" rx="4" fill="#3575b6"/>
+  <text x="538" y="202" class="label" fill="#3575b6">02 / PACKAGE</text>
+  <text x="538" y="244" class="heading">Executable plan</text>
+  <text x="538" y="287" class="body">Real trainer, configs and code</text>
+  <text x="538" y="322" class="body">Pinned assets and finite budget</text>
+  <text x="538" y="357" class="body">Document-only reconstruction</text>
+
+  <path d="M 924 275 H 958" class="arrow"/>
+  <rect x="968" y="155" width="416" height="236" rx="18" fill="#fff7e7" stroke="#d8b779" stroke-width="2"/>
+  <rect x="968" y="155" width="416" height="8" rx="4" fill="#ae6d12"/>
+  <text x="994" y="202" class="label" fill="#915c12">03 / MEASURE ON TARGET</text>
+  <text x="994" y="244" class="heading">Six acceptance gates</text>
+  <text x="994" y="287" class="body">Hardware · assets · model smoke</text>
+  <text x="994" y="322" class="body">Recovery · profiling · budget</text>
+  <text x="994" y="357" class="body">Repair and recheck failures</text>
+
+  <path d="M 1176 393 V 422 H 720 V 470" class="arrow"/>
+  <text x="56" y="447" class="small" fill="#50647e">CPU checks ≠ GPU verification</text>
+  <text x="930" y="459" class="small" fill="#915c12">Long sweeps start after acceptance</text>
+
+  <rect x="56" y="484" width="1328" height="245" rx="18" fill="#e9eef6" stroke="#c3d4e6" stroke-width="2"/>
+  <text x="82" y="527" class="label">04 / SEARCH EACH REQUESTED METHOD</text>
+  <rect x="82" y="550" width="396" height="87" rx="12" fill="#f5f0ff" stroke="#ad98ce"/>
+  <text x="106" y="586" font-size="28" font-weight="700" fill="#61458c">Full FT</text>
+  <text x="106" y="615" class="small">Backbone + task head · separate LRs</text>
+  <rect x="522" y="550" width="396" height="87" rx="12" fill="#e9f6f2" stroke="#89b6a8"/>
+  <text x="546" y="586" font-size="28" font-weight="700" fill="#226a58">LoRA rank 16</text>
+  <text x="546" y="615" class="small">Own baseline, targets and recipe</text>
+  <rect x="962" y="550" width="396" height="87" rx="12" fill="#e9f6f2" stroke="#89b6a8"/>
+  <text x="986" y="586" font-size="28" font-weight="700" fill="#226a58">LoRA rank 32</text>
+  <text x="986" y="615" class="small">Own baseline, targets and recipe</text>
+  <text x="82" y="678" class="body">Minimum-LR anchors are reusable trials → convergence checks → bounded search</text>
+  <text x="82" y="708" class="small" fill="#50647e">Example ranks shown. Preserve every requested method; caps are not proof of saturation.</text>
+
+  <path d="M 720 731 V 772" class="arrow"/>
+  <rect x="56" y="786" width="1328" height="89" rx="18" fill="#172b46"/>
+  <text x="82" y="824" font-size="27" font-weight="700" style="fill:#ffffff">05 / CONFIRM &amp; REPORT</text>
+  <text x="82" y="855" class="small" style="fill:#dce7f5">Validation selection + seed confirmation → final test → recipes, checkpoints, cost and search limits</text>
+</svg>

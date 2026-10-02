@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "study_id": "cpu-fixture-not-model-training",
+  "mode": "cpu_fixture",
+  "output_root": "example-run",
+  "device_lock_root": "example-device-locks",
+  "worker": {"argv": ["{python}", "{plan_dir}/fake_worker.py"]},
+  "devices": [{"id": "cpu:fixture", "slots": 1}],
+  "budgets": {
+    "total_device_seconds": 60,
+    "confirmation_reserve_device_seconds": 10,
+    "per_method_device_seconds": {"full_ft": 30, "lora_r16": 30},
+    "poll_seconds": 0.1,
+    "grace_seconds": 0.2,
+    "terminate_seconds": 0.5
+  },
+  "trials": [
+    {
+      "method": "full_ft", "family": "fixture-family", "roles": ["anchor"], "max_seconds": 2,
+      "config": {"method": "full_ft", "family": "fixture-family", "seed": 1,
+        "metric": {"name": "fixture_score", "direction": "max"},
+        "schedule": {"immutable_steps": 1}, "fake": {"duration": 0.2, "status": "saturated"}}
+    },
+    {
+      "method": "full_ft", "family": "fixture-family", "roles": ["baseline", "candidate"], "max_seconds": 2,
+      "config": {"method": "full_ft", "family": "fixture-family", "seed": 2,
+        "metric": {"name": "fixture_score", "direction": "max"},
+        "schedule": {"immutable_steps": 1}, "fake": {"duration": 0.2, "status": "completed"}}
+    },
+    {
+      "method": "lora_r16", "family": "fixture-family", "roles": ["anchor"], "max_seconds": 2,
+      "config": {"method": "lora_r16", "family": "fixture-family", "seed": 1,
+        "metric": {"name": "fixture_score", "direction": "max"},
+        "schedule": {"immutable_steps": 1}, "fake": {"duration": 0.2, "status": "saturated"}}
+    },
+    {
+      "method": "full_ft", "family": "fixture-family", "roles": ["confirmation"], "max_seconds": 2,
+      "config": {"method": "full_ft", "family": "fixture-family", "seed": 3,
+        "metric": {"name": "fixture_score", "direction": "max"},
+        "schedule": {"immutable_steps": 1}, "fake": {"duration": 0.2, "status": "completed"}}
+    }
+  ]
+}
