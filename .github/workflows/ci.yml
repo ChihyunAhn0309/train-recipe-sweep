@@ -34,3 +34,5 @@ jobs:
         run: python scripts/recipe_coverage.py check --source examples/recipe-coverage/source.json --decisions examples/recipe-coverage/decisions.json --trials examples/recipe-coverage/trials.json
       - name: Run documented CPU demo and verify reuse
         run: python tools/run_cpu_demo.py --output "${{ runner.temp }}/recipe-demo"
+      - name: Verify fast-search CPU continuation and exhaustive reference
+        run: python tools/run_fast_demo.py --output "${{ runner.temp }}/fast-recipe-demo" --compare-exhaustive

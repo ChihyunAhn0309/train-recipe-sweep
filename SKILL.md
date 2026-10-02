@@ -1,6 +1,6 @@
 ---
 name: train-recipe-sweep
-description: Verify models, pretrained checkpoints, datasets and ground truth, then plan or execute evidence-based training-recipe sweeps for Full FT and separately requested LoRA ranks. Use for train recipe optimization, fine-tuning plans, saturation-epoch calibration, or GPU sweep execution; not for ordinary inference or an isolated training-code fix.
+description: Verify models, pretrained checkpoints, datasets and ground truth, then plan or execute evidence-based training-recipe sweeps for Full FT and separately requested LoRA ranks. Supports opt-in fast, single-seed, staged pruning searches. Use for recipe optimization, fine-tuning plans, saturation calibration, or GPU sweeps; not ordinary inference or an isolated training-code fix.
 ---
 
 # Train Recipe Sweep
@@ -16,8 +16,11 @@ First consult the conversation, project configuration and model/data documentati
 - Requested methods: `full_ft`, `lora_r16`, `lora_r32`, etc. Treat each rank as a separate search.
 - Primary metric and direction, actual target host and allocated GPU IDs/count/VRAM, workspace, time/GPU-hour/storage limits.
 - `plan` or `execute`. A planning request does not authorize a long training run.
+- `search_mode=standard` or opt-in `fast`. A request for quick/minimum-time search selects fast mode; record wall-clock and GPU-hour limits separately.
 
 When the user delegates unspecified choices, choose with evidence and record assumptions. The finite default budget in [contracts](references/contracts.md) may apply. Do not invent server access, private-data permission or credentials. Do not request execution approval that the user has already given. Resolve ambiguous model/data names before they change the experiment.
+
+For fast mode, read [fast search](references/fast-search.md). Prefer one prespecified seed, a source-led shortlist or guarded successive halving/ASHA, reusable full-state continuation, and a protected finish/checkpoint reserve. Its explicit reduced-confirmation and censored-calibration rules override standard-mode defaults; correctness, provenance, leakage and GPU gates still apply. Supply/test the actual scheduler adapter for executable handoffs. Fast mode does not promise equal quality in less time.
 
 ## 2. Verify the model, checkpoint, data and provenance
 
@@ -78,7 +81,7 @@ Verify the actual Python interpreter and record readiness separately for design,
 
 ## 7. Deliver the best recipe and limits for each method
 
-Freeze finalist recipes and selection evidence before fresh-seed confirmation. Compare baseline and finalists on the same reserved seed list; keep exploratory winning-seed scores outside the confirmation aggregate. Compare validation improvements, seed variability, trainable parameter counts, best/stop epochs, termination reasons, GPU time, peak VRAM and throughput. Report Full FT and every requested LoRA rank separately. Select using validation; evaluate test only after selection is complete. Use [scientific validation](references/scientific-validation.md) evidence fields so incomplete calibration/confirmation stays visible.
+Freeze finalist recipes and selection evidence before any fresh-seed confirmation. In standard mode, compare baseline and finalists on the same reserved seed list; keep exploratory winning-seed scores outside the confirmation aggregate. Fast mode may deliver a verified single-seed checkpoint without that confirmation, with uncertainty and incomplete calibration explicit. Compare validation improvements, available seed variability, trainable parameter counts, best/stop epochs, termination reasons, wall/GPU time, peak VRAM and throughput. Report Full FT and every requested LoRA rank separately. Select using validation; evaluate test only after selection is complete. Use [scientific validation](references/scientific-validation.md) evidence fields so incomplete calibration/confirmation stays visible.
 
 Plans include execution order, conditional spaces, time/storage estimates, recovery, concrete commands and unresolved assumptions. Execution results include winning configurations/checkpoints, reproduction commands, environment lock, complete trial registry, source/data manifests, train/validation curves and unsearched regions. Distinguish file creation, dry-run validation and actual GPU execution.
 

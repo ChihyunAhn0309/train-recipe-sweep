@@ -12,6 +12,8 @@ If the user explicitly delegates unspecified choices, use the official task metr
 
 For delegated budgets with no existing project default, a **proposed initial cap** is 24 aggregate GPU-hours for the entire study, up to 30 non-confirmation trials per method/rank, at most two boundary-expansion rounds, and at most two OOM retries per layout. GPU-hours include baseline, profiling, anchors, failed attempts and confirmation. These are ceilings, not targets or promises of sufficiency. Use profiling to reserve confirmation budget and ensure all families fit; if even baselines/anchors cannot fit, present the feasible reduced scope or required budget rather than dropping requested families silently. Never interpret “optimal” as unlimited compute.
 
+That default is for standard mode. Explicit fast mode uses [fast-search.md](fast-search.md), including its smaller delegated starting caps, separate wall deadline, single-seed option and measured finish reserve. Record `search_mode`, scheduler/shortlist choice, rungs, grace/protection/tie policies, selective resume integration, anchor fallback and whether fresh confirmation is intentionally omitted. Fast mode changes evidence strength, not the requested model/data/method scope.
+
 ## Machine-readable study specification
 
 Generate a resolved `study.yaml` (or project-native equivalent) with these sections. Fields are a contract, not a required new framework:
@@ -27,7 +29,7 @@ Generate a resolved `study.yaml` (or project-native equivalent) with these secti
 | convergence | Family definition, anchor configs, eval cadence, numerical plateau policy, schedule guards |
 | resources | Observed hardware/allocation, budget, profiling matrix, packing plan, retry and retention policy |
 | execution | Environment lock, exact entrypoint/args, scheduler/launch/resume and metric contract |
-| selection | Frozen finalist IDs/evidence, fresh paired baseline/finalist seeds, aggregation/tie and failed-run policy, validation-only comparison, final test policy |
+| selection | Frozen finalist IDs/evidence, fresh paired seeds or explicit fast single-seed limitation, aggregation/tie and failed-run policy, validation-only comparison, final test policy |
 | limitations | Unknown/proposed values, blocked access, unsearched space and estimates |
 
 Store source-linked baseline configs before resolving framework defaults. Every launch must dump the fully resolved configuration including defaults, actual parameter group LRs and selector expansion. Unknown required values block that launch, not unrelated work.

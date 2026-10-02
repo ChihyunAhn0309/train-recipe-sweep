@@ -41,6 +41,20 @@ Follow [scientific validation](references/scientific-validation.md) when compari
 
 For later-stage candidates, [study_extend.py](scripts/study_extend.py) retains completed anchors, results and cumulative costs. The model-specific adapter freezes selection and generates trials; the helper does not select winners or authorize a larger budget.
 
+### Opt-in fast search
+
+Ask for `search_mode=fast` when turnaround matters more than multi-seed confirmation. The skill uses one prespecified seed, a source-led shortlist or guarded successive halving/ASHA, and reserves time to finish and verify usable checkpoints. Baselines and slow-learning controls receive protection; promotions preserve the original full-horizon LR schedule and resumable state. A single-seed winner is reported as best observed, with its uncertainty and incomplete calibration visible. See [fast-search policy and integration](references/fast-search.md).
+
+```text
+$train-recipe-sweep Make an executable GPU handoff in fast mode.
+Methods: full_ft, lora_r16, lora_r32. Use one seed initially.
+Limits: 2 hours elapsed, 4 aggregate GPU-hours, including setup and final export.
+Use measured grace and staged candidate reduction; finish and verify each method's
+best checkpoint. Defer multi-seed confirmation and report the evidence limits.
+```
+
+Run `python tools/run_fast_demo.py --output fast-demo --compare-exhaustive` for a tiny generated-data CPU classifier demonstration. It checks actual state continuation and reports toy exposure savings and quality against a full reference. It does not establish GPU speed or pretrained-model quality. The bundled [fast decision helper](scripts/fast_search.py) is synchronous and requires a model-specific scheduler adapter; the ordinary controller does not automatically consume its actions.
+
 ## Install
 
 In Codex, ask the built-in installer:
@@ -128,6 +142,7 @@ Tests use temporary directories and real child processes. They exercise malforme
 | [plan_bundle.py](scripts/plan_bundle.py) | Pack, verify and reconstruct a document containing hashed UTF-8 files; never executes them. |
 | [study_controller.py](scripts/study_controller.py) | Local SQLite claims, single-device workers, anchor gating, physical-device accounting and bounded recovery. |
 | [study_extend.py](scripts/study_extend.py) | Append-only stage transitions retaining anchors, results and cumulative budgets. |
+| [fast_search.py](scripts/fast_search.py) | Opt-in synchronous rung ranking, protected controls/grace/ties and checkpoint-integrity decisions; not a launcher. |
 | [fake_worker.py](scripts/fake_worker.py) | Synthetic CPU protocol fixture for testing only. |
 
 The controller supports **one host and one physical GPU per worker**, with measured packing for independent workers. A real project adapter must implement training, task-specific evaluation/convergence, consistent checkpoints and resume state. Multi-GPU trials and clusters need a suitable project scheduler.

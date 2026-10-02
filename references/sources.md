@@ -13,6 +13,8 @@ Core sources checked 2026-10-02; selection-bias and reference-search sources add
 | [DoRA](https://arxiv.org/abs/2402.09353) | Magnitude/direction decomposition, a distinct optional adaptation method |
 | [Deep Learning Tuning Playbook](https://github.com/google-research/tuning_playbook) | Source-led incremental search, experiment records, training-duration/schedule coupling and validation checkpoint selection |
 | [Hyperband](https://arxiv.org/abs/1603.06560) | Optional multi-fidelity budget allocation; pruning is not convergence detection |
+| [ASHA](https://arxiv.org/abs/1810.05934) | Asynchronous successive halving for parallel hyperparameter tuning; fast mode still needs a tested integration |
+| [Ray Tune schedulers](https://docs.ray.io/en/latest/tune/api/schedulers.html) | Version-sensitive ASHA/Hyperband APIs and implementation distinctions; checked for fast-mode guidance 2026-10-03 |
 | [PyTorch saving and loading](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html) | Model and optimizer state for continuing training |
 | [PyTorch performance tuning](https://docs.pytorch.org/tutorials/recipes/recipes/tuning_guide.html) | Data, kernel, memory and distributed execution tuning |
 | [Hub download guide](https://huggingface.co/docs/huggingface_hub/guides/download) | Version-pinned downloads and file selection |

@@ -4,7 +4,7 @@ This page distinguishes reproducible software checks from target-specific traini
 
 ## Reproducible checks
 
-The current suite contains **130 unittest cases**: the previous 110 cases plus Unicode identity interoperability, aligned stopping caps, and 18 staged-extension cases. The original suite passed the [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) on **Ubuntu and Windows with Python 3.11 and 3.13**. The workflow tests the current suite, CPU demo and repository checks in that four-job matrix; the README badge links to current results. A historical run is evidence for its own commit, not later changes.
+The current suite contains **163 unittest cases**: the previous 130 cases plus 33 fast-search cases. The original suite passed the [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) on **Ubuntu and Windows with Python 3.11 and 3.13**. The workflow tests the current suite, CPU demos and repository checks in that four-job matrix; the README badge links to current results. A historical run is evidence for its own commit, not later changes.
 
 ```sh
 python -B -m unittest discover -s scripts -p "test_*.py" -v
@@ -25,6 +25,22 @@ python tools/run_cpu_demo.py --output ./demo-run
 | GPU gate schema | Missing, stale and incompatible evidence rejected; source/config/device scope changes invalidate acceptance. |
 
 The CPU demo launches real subprocesses with synthetic outputs. Its scores and device-seconds are protocol fixtures, not model quality or GPU-hours.
+
+## Fast-mode checks
+
+The opt-in [fast policy](../references/fast-search.md) has a synchronous decision helper and a tiny real CPU classifier demonstration on generated data. The 33 added regressions cover cohort/seed/schedule identity, barriers, protected/grace candidates, ties, min/max ranking, invalid metrics/artifacts, stale/future/pruned history, preservation of best checkpoints and actual state continuation against uninterrupted training.
+
+```sh
+python tools/run_fast_demo.py --output ./fast-demo --compare-exhaustive
+```
+
+In the local deterministic toy example, ten configurations use 3/9/27-epoch rungs, a protected baseline and 3/1 unprotected survivors. Best-so-far promotion trains 90 candidate-epochs versus 270 for the full reference, selects the same configuration and validation-best checkpoint metric (BCE 0.1760184564419013), and matches both surviving full training states exactly after six resumed segments. Reloading the selected checkpoint reproduces its metric. The reference training is additional validation work, outside the 90-epoch search allocation.
+
+An earlier current-rung-only promotion experiment on the same toy data discarded a better checkpoint and had BCE regret about 0.03236. This motivated explicit alignment of promotion and checkpoint-selection objectives, preservation of best-so-far state, and separate reporting of better nonfinal checkpoints. It is a demonstrated risk, not evidence that best-so-far ranking always wins. The small demo's I/O and decision overhead can dominate training, so reduced exposure does **not** establish wall-clock speedup. No pretrained Full FT, LoRA, source-benchmark reproduction or GPU throughput is tested by this toy example.
+
+The decision helper is not a scheduler or budget enforcer. A complete fast GPU handoff must supply and test selective dispatch/resume, atomic leases, actual accounting, deadline/finish reservations and target acceptance. The ordinary study controller does not automatically implement halving or ASHA.
+
+Two independent agent sessions reviewed the fast-mode instructions and code. Their findings led to rejection of regressing cumulative best metrics, preservation of historical best-checkpoint identity, a separate nonfinal-checkpoint signal, and clearer standalone-anchor/competitive-pruning/bootstrap gates. The final instruction recheck passed 10 CPU protocol probes; the code reviewer passed 19 independent probes on each Windows interpreter and verified fresh-process reload and JSON pause/resume equivalence for all ten toy configurations on Python 3.11 and 3.13. No actionable issue remained in the rechecked scope. These are development observations, not third-party certification or real model-specific GPU validation.
 
 ## Independent development review
 

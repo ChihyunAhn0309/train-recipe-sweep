@@ -2,6 +2,8 @@
 
 Read when defining baseline comparisons, selecting finalists, or assessing whether a sweep works. Software correctness, source recovery, local performance and search quality need different evidence. CPU execution can include real small-model training; a fixture worker is not such training. Label each executed command accordingly.
 
+An explicit [fast search](fast-search.md) can finish with one exploration seed and no fresh confirmation. This is a valid bounded deliverable labeled best observed, not a confirmed improvement or source reproduction. The fresh-seed requirements below apply when that stronger claim/validation is requested; do not turn them into mandatory extra training that defeats the user's fast-mode budget.
+
 ## Register the comparison before searching
 
 Keep these separate for every model, task and method/rank:

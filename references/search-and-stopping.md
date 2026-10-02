@@ -2,6 +2,8 @@
 
 The numerical defaults below are proposed engineering starting points, not literature-proven universal optima. Set and freeze task-specific values before candidate selection; record all changes as study revisions.
 
+For an explicit fast search, apply [fast-search.md](fast-search.md): one-seed exploration, budgeted calibration fallback, guarded rungs, exact continuation and a finishing reserve may replace standard confirmation defaults. It still starts minimum-LR anchors, retains evidence and never calls pruning/censoring saturation.
+
 ## Baselines and coverage
 
 Create separate immutable configs for source checkpoint generation (possibly incomplete), target Full FT baseline, and each model/rank's LoRA baseline. Reconstruct missing source fields only as labeled proposals. Include the source-derived baseline in the sweep, even when it is not the minimum-LR anchor. If two configs resolve identically, share the trial instead of rerunning it.
