@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "f0a110768728e7689d257c446641a9397c348e369263c57e58a6ae946a99ca9f",
+  "source_sha256": "af65cda8895d7c35568611f52cba348db50a50df29d5fc7b3287719fa361fe9b",
   "methods": [
     "full_ft",
     "lora_r16",
