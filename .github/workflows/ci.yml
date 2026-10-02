@@ -30,5 +30,7 @@ jobs:
         run: python tools/check_repository.py
       - name: Run regression suite
         run: python -B -m unittest discover -s scripts -p "test_*.py" -v
+      - name: Verify documented multi-scale candidate coverage
+        run: python scripts/recipe_coverage.py check --source examples/recipe-coverage/source.json --decisions examples/recipe-coverage/decisions.json --trials examples/recipe-coverage/trials.json
       - name: Run documented CPU demo and verify reuse
         run: python tools/run_cpu_demo.py --output "${{ runner.temp }}/recipe-demo"

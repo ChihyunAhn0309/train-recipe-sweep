@@ -22,6 +22,9 @@ def main():
     json.loads((root / 'scripts/example-study.json').read_text(encoding='utf-8'))
     documents = [root / 'README.md', root / 'SKILL.md', root / 'CONTRIBUTING.md']
     documents += list((root / 'references').glob('*.md')) + list((root / 'docs').glob('*.md'))
+    documents += list((root / 'examples').rglob('*.md'))
+    for path in (root / 'examples').rglob('*.json'):
+        json.loads(path.read_text(encoding='utf-8'))
     checked = 0
     for document in documents:
         content = document.read_text(encoding='utf-8')

@@ -24,6 +24,8 @@ For consequential claims record `claim_id`, URL, accessed date, paper section/ta
 
 Distinguish authors' reported scores from local reproductions. Resolve paper/config conflicts using the artifact demonstrably used for the selected weights; otherwise expose the conflict. An inference config is not proof of its training recipe.
 
+Before baseline construction, complete [source recipe reconciliation](recipe-reconciliation.md): inspect inherited defaults, command overrides, pipeline/callback code and source phase schedules. Inventory all resolved source keys and code-only techniques, including multi-scale training, and assign every one an explicit per-method target decision. A short hyperparameter table is not a complete source recipe audit.
+
 ## Selecting and acquiring weights
 
 Compare candidates: exact ID/revision, official status, pretraining datasets, compatibility, task fit, popularity evidence/date/window, recipe availability, license/access, size and checksum. Prefer the widely adopted official compatible checkpoint when supported. Downloads, stars and citations measure different things; mirror downloads are not globally comparable. If popularity cannot be established, say so and choose the strongest defensible candidate. Preserve a user-selected checkpoint unless an actual incompatibility needs resolving.

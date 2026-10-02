@@ -29,6 +29,8 @@ Read [evidence and data](references/evidence-and-data.md). Compare current prima
 - Check label coverage, GT alignment, group/time splits, duplicates, leakage, ontology and evaluability as well as sample counts. Explain missing or inadequate train/validation data with concrete remedies. Never repurpose test data as validation.
 - In plan mode, supply the same acquisition/verification commands and completion criteria. Do not mark unacquired large files as verified.
 
+Read [source recipe reconciliation](references/recipe-reconciliation.md) before defining any baseline or search. Recover effective settings from config inheritance, launch overrides, versioned defaults, augmentation code and phase schedules. Produce a source-to-target ledger covering every recovered setting for every method/rank. Include multi-scale training, resize/crop distributions and cadence, GT transforms, augmentation on/off and late-stage changes; distinguish training policy from evaluation/TTA. No source setting may disappear silently. Use the coverage checker and actual pipeline checks described in that reference.
+
 ## 3. Define the task head and trainable parameters
 
 Read [model adaptation and LoRA](references/model-adaptation.md).
@@ -47,6 +49,8 @@ Read [search and stopping](references/search-and-stopping.md), then build the st
 Preserve the evidence chain: checkpoint-generation recipe → task-adapted Full FT baseline → model-specific LoRA baselines. Evaluate baselines on the actual task. Do not claim original-paper reproduction without reproducing the original setting.
 
 Classify every relevant axis as `sweep / fixed / conditional / excluded`, with bounds, rationale, budget and interactions. Cover LR, head LR, effective batch, optimizer, weight decay, scheduler, warmup, training length, regularization/augmentation, and LoRA targets/alpha/dropout. Do not promise infinitely many values or all combinations. Expand a winning boundary within the authorized budget.
+
+For applicable techniques whose transfer is uncertain, compare source-enabled settings against disabled controls within budget, including multi-scale when present. Any decision to fix or omit an ablatable technique needs a method-specific reason; omission from an initial implementation is not a reason to silently drop it. Preserve the compatible source-derived baseline and declare interacting/conditional factors. Reconcile the ledger against compiled trial configs so a listed on/off sweep cannot pass as scheduled when one state is absent. Report planned versus actually completed coverage separately.
 
 ## 5. Use the minimum-LR trial as the first convergence search
 

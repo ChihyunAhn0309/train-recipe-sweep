@@ -9,6 +9,7 @@ The plan must resolve model IDs/revisions, task/head/label semantics, requested 
 Embed these runnable resources, or exact pinned public sources plus a checked acquisition/patch command that reconstructs them:
 
 - Model/task trainer and real framework configuration; download scripts and revision/hash manifests for weights/tokenizer/raw data/GT; deterministic data/split/group audit.
+- Resolved source recipe manifests/original evidence, the [per-method decision ledger](recipe-reconciliation.md), `recipe_coverage.py`, compiled candidate coverage, and augmentation/pipeline smoke checks. Preserve multi-scale distributions/cadence, enabled/disabled controls and justified exclusions in the transferred document.
 - Experiment config producer with environment-independent scientific definitions and explicit target-resolution fields. Generate final semantic trial IDs only after target defaults, backend/precision/layout and code/environment hashes are resolved.
 - Controller/worker adapter with real atomic dispatch, resume/reuse, budget admission/accounting and report aggregation. A list of responsibilities for an absent controller is not a complete execution package.
 - Real device smoke and export/resume checks; profiling and telemetry; finite layout-selection rules; prepare/verify/profile/run/resume commands.

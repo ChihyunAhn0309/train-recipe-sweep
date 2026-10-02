@@ -19,6 +19,7 @@ A Codex skill for researching checkpoints and training baselines, auditing groun
 | Stage | Required outcome |
 |---|---|
 | Verify the starting point | Exact model/data revisions, checkpoint provenance, source recipes, hashes and a GT/metadata inventory. |
+| Reconcile every source setting | Resolve config inheritance, defaults and pipeline code; map every source field to each method's target decision, including multi-scale and enabled/disabled controls. |
 | Adapt the model | Replace incompatible heads, train the full model for Full FT, and separate head/backbone or head/adapter learning rates. |
 | Research LoRA | Find model-specific references and resolve actual module paths, trainable state, scaling and per-rank baselines. |
 | Calibrate convergence | Run minimum-positive-LR anchors as actual sweep trials, reuse their results, and distinguish stagnation from learning followed by saturation. |
@@ -27,6 +28,12 @@ A Codex skill for researching checkpoints and training baselines, auditing groun
 | Report | Compare each method against its baseline with validation performance, seed variation, cost, throughput and search coverage. |
 
 “Best” always means **best evaluated within the stated search space and budget**. No finite sweep guarantees a global optimum. Checkpoint download failures do not justify silently switching to random initialization. Test data never selects recipes.
+
+### Source techniques must not disappear
+
+If the original recipe used multi-scale training, the agent must recover its sizes/distribution, cadence, GT transforms and phase schedule. For each method/rank, it records whether to inherit, adapt, compare enabled/disabled, or omit it with a specific reason. Applicable techniques with uncertain transfer receive on/off comparisons within budget; fixed evaluation/TTA settings remain separate. A missing local implementation does not silently become an excluded technique.
+
+The [recipe coverage checker](scripts/recipe_coverage.py) detects unmapped source fields, missing method decisions and declared candidates absent from actual compiled configs. Try the [runnable multi-scale coverage example](examples/recipe-coverage/README.md). Actual pipeline behavior still needs smoke checks; JSON coverage alone cannot prove a historical recipe was fully recovered. See the [reconciliation contract](references/recipe-reconciliation.md).
 
 ## Install
 
@@ -110,6 +117,7 @@ Tests use temporary directories and real child processes. They exercise malforme
 |---|---|
 | [SKILL.md](SKILL.md) | Agent workflow, research decisions and reference routing. |
 | [sweep_guard.py](scripts/sweep_guard.py) | Immutable trial fingerprints and configurable plateau decisions. |
+| [recipe_coverage.py](scripts/recipe_coverage.py) | Source-setting coverage, per-method on/off decisions and compiled candidate reconciliation. |
 | [runtime_guard.py](scripts/runtime_guard.py) | Asset checks, output identity and persistent local execution budgets. |
 | [plan_bundle.py](scripts/plan_bundle.py) | Pack, verify and reconstruct a document containing hashed UTF-8 files; never executes them. |
 | [study_controller.py](scripts/study_controller.py) | Local SQLite claims, single-device workers, anchor gating, physical-device accounting and bounded recovery. |
@@ -136,6 +144,7 @@ flowchart TD
 
 - [Inputs, study identity and deliverables](references/contracts.md)
 - [Evidence, checkpoints and ground truth](references/evidence-and-data.md)
+- [Source recipe reconciliation and technique ablations](references/recipe-reconciliation.md)
 - [Model heads and LoRA adaptation](references/model-adaptation.md)
 - [Search spaces and stopping](references/search-and-stopping.md)
 - [GPU execution](references/execution.md) and [acceptance](references/gpu-acceptance.md)

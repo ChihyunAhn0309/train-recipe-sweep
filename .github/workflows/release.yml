@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.13"
@@ -24,6 +24,7 @@ jobs:
           python -B -m unittest discover -s scripts -p "test_*.py" -v
       - name: Build installable archive and checksum
         run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git archive --format=zip --prefix=train-recipe-sweep/ --output=train-recipe-sweep.zip HEAD
           sha256sum train-recipe-sweep.zip > train-recipe-sweep.zip.sha256
           unzip -t train-recipe-sweep.zip

@@ -4,7 +4,7 @@ This page distinguishes reproducible software checks from target-specific traini
 
 ## Reproducible checks
 
-The first public version contains **95 unittest cases**: 66 across the sweep guard, runtime guard and portable bundle, plus 29 controller cases. Before publication, the integrated suite passed locally on Windows with Python 3.11 and 3.13. The [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) then passed on **Ubuntu and Windows with both Python 3.11 and 3.13**, including the documented CPU demo and repository checks. The workflow continues to test that four-job matrix on pushes and pull requests.
+The current suite contains **110 unittest cases**: the original 95 guard/bundle/controller cases plus 15 source-recipe coverage cases. The original suite passed locally on Windows with Python 3.11 and 3.13, then passed the [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) on **Ubuntu and Windows with both Python 3.11 and 3.13**, including the documented CPU demo and repository checks. The workflow continues to test the current suite in that four-job matrix on pushes and pull requests; the README badge links to current results.
 
 ```sh
 python -B -m unittest discover -s scripts -p "test_*.py" -v
@@ -15,6 +15,7 @@ python tools/run_cpu_demo.py --output ./demo-run
 | Area | Behavior exercised |
 |---|---|
 | Trial identity | Full SHA-256, immutable config, duplicate-key/nonfinite rejection, schedule/config changes. |
+| Source recipe coverage | Unreviewed source keys, stale hashes, missing rank decisions, unjustified missing on/off controls, unrealized conditional branches and differences from compiled configs. |
 | Convergence | Learned versus stagnant trajectories, warmup/schedule guards, near-zero thresholds and censoring. |
 | Assets and budgets | Actual loader paths, hash/size checks, interrupted state and accumulated cost persistence. |
 | Document transport | Reconstructable content, hashes, portable names, traversal/collision rejection, literal argv. |

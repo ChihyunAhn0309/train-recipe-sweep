@@ -6,6 +6,8 @@ The numerical defaults below are proposed engineering starting points, not liter
 
 Create separate immutable configs for source checkpoint generation (possibly incomplete), target Full FT baseline, and each model/rank's LoRA baseline. Reconstruct missing source fields only as labeled proposals. Include the source-derived baseline in the sweep, even when it is not the minimum-LR anchor. If two configs resolve identically, share the trial instead of rerunning it.
 
+Require the [source-to-target decision ledger](recipe-reconciliation.md) before compiling trials. For multi-scale and other applicable techniques with uncertain transfer, compare enabled and disabled candidates unless an explicit method-specific justification fixes/excludes one state. Preserve exact distributions, transform order, cadence, GT semantics and schedule transitions. Separate training augmentation from validation/TTA. Validate actual candidate coverage against compiled configs; do not count a proposed or failed branch as a completed ablation. Consider interactions within the finite budget, and invalidate or verify horizon transfer across material augmentation regimes.
+
 For each relevant axis list `sweep`, `fixed`, `conditional`, or `excluded`; numerical bounds/categories, log/linear scale, origin, dependency and why the coverage is adequate. Cover:
 
 - Backbone or adapter LR; independent head LR/multiplier; optional layer-wise decay.

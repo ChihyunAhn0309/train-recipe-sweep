@@ -1,0 +1,109 @@
+{
+  "trials": [
+    {
+      "method": "full_ft",
+      "config": {
+        "method": "full_ft",
+        "train": {
+          "multi_scale": {
+            "enabled": true,
+            "sizes": [
+              512,
+              640,
+              768
+            ],
+            "change_every_batches": 1
+          }
+        },
+        "evaluation": {
+          "tta": false
+        }
+      }
+    },
+    {
+      "method": "full_ft",
+      "config": {
+        "method": "full_ft",
+        "train": {
+          "multi_scale": {
+            "enabled": false,
+            "size": 640
+          }
+        },
+        "evaluation": {
+          "tta": false
+        }
+      }
+    },
+    {
+      "method": "lora_r16",
+      "config": {
+        "method": "lora_r16",
+        "train": {
+          "multi_scale": {
+            "enabled": true,
+            "sizes": [
+              512,
+              640,
+              768
+            ],
+            "change_every_batches": 1
+          }
+        },
+        "evaluation": {
+          "tta": false
+        }
+      }
+    },
+    {
+      "method": "lora_r16",
+      "config": {
+        "method": "lora_r16",
+        "train": {
+          "multi_scale": {
+            "enabled": false,
+            "size": 640
+          }
+        },
+        "evaluation": {
+          "tta": false
+        }
+      }
+    },
+    {
+      "method": "lora_r32",
+      "config": {
+        "method": "lora_r32",
+        "train": {
+          "multi_scale": {
+            "enabled": true,
+            "sizes": [
+              512,
+              640,
+              768
+            ],
+            "change_every_batches": 1
+          }
+        },
+        "evaluation": {
+          "tta": false
+        }
+      }
+    },
+    {
+      "method": "lora_r32",
+      "config": {
+        "method": "lora_r32",
+        "train": {
+          "multi_scale": {
+            "enabled": false,
+            "size": 640
+          }
+        },
+        "evaluation": {
+          "tta": false
+        }
+      }
+    }
+  ]
+}

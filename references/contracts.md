@@ -32,6 +32,8 @@ Generate a resolved `study.yaml` (or project-native equivalent) with these secti
 
 Store source-linked baseline configs before resolving framework defaults. Every launch must dump the fully resolved configuration including defaults, actual parameter group LRs and selector expansion. Unknown required values block that launch, not unrelated work.
 
+Attach the [source recipe reconciliation ledger](recipe-reconciliation.md), resolved source inventories/hashes, evidence locations and per-method on/off decisions. Every source field needs a disposition; source-enabled techniques cannot vanish from the target baseline without a recorded reason. Include compiled candidate coverage and later actual completed/failed/not-run coverage. Run `recipe_coverage.py` after compiling target configs, with pipeline smoke evidence showing that the trainer consumes the declared settings.
+
 Include a `readiness` map with evidence for: `design_resolved`, `assets_verified`, `trainer_available`, `cpu_or_device_smoke_verified`, `target_environment_verified`, `target_hardware_profiled`, and `launch_ready`. A researched plan can be useful while later fields are false. Exact-looking commands aimed at an absent trainer are not execution-ready. Either supply and check the trainer/controller entrypoint or name the missing implementation and its concrete input/output contract. Plan mode does not need to perform GPU training merely to mark a plan complete; it must describe remaining execution prerequisites honestly.
 
 ## Trial identity and registry

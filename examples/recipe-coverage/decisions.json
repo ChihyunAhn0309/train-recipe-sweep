@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "source_sha256": "f0a110768728e7689d257c446641a9397c348e369263c57e58a6ae946a99ca9f",
+  "methods": [
+    "full_ft",
+    "lora_r16",
+    "lora_r32"
+  ],
+  "rows": [
+    {
+      "factor": "train_multi_scale",
+      "source_keys": [
+        "/train/multi_scale/enabled",
+        "/train/multi_scale/sizes/0",
+        "/train/multi_scale/sizes/1",
+        "/train/multi_scale/sizes/2",
+        "/train/multi_scale/change_every_batches"
+      ],
+      "source_stage": "illustrative_checkpoint_recipe_not_real_model_evidence",
+      "evidence": [
+        "examples/recipe-coverage/source.json (synthetic example only)"
+      ],
+      "evidence_status": "proposed",
+      "ablatable": true,
+      "choices": {
+        "full_ft": {
+          "disposition": "sweep",
+          "reason": "Illustrative comparison of source-enabled policy and a fixed-size disabled control",
+          "target_pointer": "/train/multi_scale",
+          "candidates": [
+            {
+              "enabled": true,
+              "sizes": [
+                512,
+                640,
+                768
+              ],
+              "change_every_batches": 1
+            },
+            {
+              "enabled": false,
+              "size": 640
+            }
+          ]
+        },
+        "lora_r16": {
+          "disposition": "sweep",
+          "reason": "Illustrative comparison of source-enabled policy and a fixed-size disabled control",
+          "target_pointer": "/train/multi_scale",
+          "candidates": [
+            {
+              "enabled": true,
+              "sizes": [
+                512,
+                640,
+                768
+              ],
+              "change_every_batches": 1
+            },
+            {
+              "enabled": false,
+              "size": 640
+            }
+          ]
+        },
+        "lora_r32": {
+          "disposition": "sweep",
+          "reason": "Illustrative comparison of source-enabled policy and a fixed-size disabled control",
+          "target_pointer": "/train/multi_scale",
+          "candidates": [
+            {
+              "enabled": true,
+              "sizes": [
+                512,
+                640,
+                768
+              ],
+              "change_every_batches": 1
+            },
+            {
+              "enabled": false,
+              "size": 640
+            }
+          ]
+        }
+      }
+    },
+    {
+      "factor": "evaluation_tta",
+      "source_keys": [
+        "/evaluation/tta"
+      ],
+      "source_stage": "illustrative_checkpoint_recipe_not_real_model_evidence",
+      "evidence": [
+        "examples/recipe-coverage/source.json (synthetic example only)"
+      ],
+      "evidence_status": "proposed",
+      "ablatable": true,
+      "choices": {
+        "full_ft": {
+          "disposition": "fixed",
+          "reason": "Hold the declared evaluator constant across training comparisons",
+          "target_pointer": "/evaluation/tta",
+          "candidates": [
+            false
+          ],
+          "ablation_reason": "Evaluation TTA is outside this illustrative training sweep; do not confound the comparison"
+        },
+        "lora_r16": {
+          "disposition": "fixed",
+          "reason": "Hold the declared evaluator constant across training comparisons",
+          "target_pointer": "/evaluation/tta",
+          "candidates": [
+            false
+          ],
+          "ablation_reason": "Evaluation TTA is outside this illustrative training sweep; do not confound the comparison"
+        },
+        "lora_r32": {
+          "disposition": "fixed",
+          "reason": "Hold the declared evaluator constant across training comparisons",
+          "target_pointer": "/evaluation/tta",
+          "candidates": [
+            false
+          ],
+          "ablation_reason": "Evaluation TTA is outside this illustrative training sweep; do not confound the comparison"
+        }
+      }
+    }
+  ]
+}

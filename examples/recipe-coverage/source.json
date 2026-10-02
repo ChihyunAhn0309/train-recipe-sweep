@@ -1,0 +1,16 @@
+{
+  "train": {
+    "multi_scale": {
+      "enabled": true,
+      "sizes": [
+        512,
+        640,
+        768
+      ],
+      "change_every_batches": 1
+    }
+  },
+  "evaluation": {
+    "tta": false
+  }
+}
