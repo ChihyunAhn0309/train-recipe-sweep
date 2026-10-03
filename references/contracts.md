@@ -26,7 +26,7 @@ Generate a resolved `study.yaml` (or project-native equivalent) with these secti
 | data | Exact releases, raw/GT manifests, split membership/ontology hashes, audit report, train probe |
 | methods | Full FT and each LoRA rank with own baseline, target paths, trainable policy and parameter groups |
 | search | Axis disposition, bounds, distributions, conditional rules, seeds, sampling algorithm and seed |
-| convergence | Family definition, anchor configs, eval cadence, numerical plateau policy, schedule guards |
+| convergence | Family definition, minimum-LR anchors, distinct cross-check participants and conditional third, comparable exposure/tolerances, eval cadence, numerical plateau policy, schedule guards, horizon-transfer status |
 | resources | Observed hardware/allocation, budget, profiling matrix, packing plan, retry and retention policy |
 | execution | Environment lock, exact entrypoint/args, scheduler/launch/resume and metric contract |
 | selection | Frozen finalist IDs/evidence, fresh paired seeds or explicit fast single-seed limitation, aggregation/tie and failed-run policy, validation-only comparison, final test policy |
@@ -54,7 +54,7 @@ For a requested executable handoff using only the skill and document, the [porta
 
 1. Human-readable model/checkpoint choice and evidence table; dataset/split audit and unresolved issues.
 2. Source, Full FT and per-rank LoRA baselines with value provenance and exact head/adapter mapping.
-3. Resolved or explicitly conditional study/configs, parameter ranges and rationale, minimum-LR anchors, numerical stopping policy, budget allocation and GPU profile/packing plan.
+3. Resolved or explicitly conditional study/configs, parameter ranges and rationale, minimum-LR anchors, adaptive horizon cross-check manifest, numerical stopping policy, incremental-cost/finish reserves and GPU profile/packing plan.
 4. Exact target-environment commands for download, integrity/data audit, smoke/profile, launch, monitor and resume. Provide real scripts/configs when sufficient details exist; mark untested or blocked commands accurately.
 5. Acceptance criteria and estimated cost/VRAM/storage with assumptions and uncertainty. Do not invent a best recipe or measured saturation epoch before experiments.
 

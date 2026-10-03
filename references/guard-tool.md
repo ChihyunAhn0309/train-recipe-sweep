@@ -58,6 +58,8 @@ JSON arrays also work. Missing, duplicate, out-of-order or off-cadence evaluatio
 
 The algorithm compares two adjacent W-point windows at K consecutive endpoints, requiring small median change and fitted absolute trend in each window. Median absolute deviation of residuals after removing the fitted linear trend gates excessive noise; it is not a statistical confidence interval. All windows are after the maximum of min_step, warmup_end_step and schedule_guard_step. Validation patience uses cumulative improvement relative to the last meaningful best, while `best_step` tracks the actual raw best independently.
 
+Sparse spikes need an additional check because residual MAD can be zero even with a large central outlier. The guard also reports maximum absolute detrended residual and requires it not to exceed `max(loss_noise_limit, loss_flatness_limit)`. The separate MAD noise limit still applies. The flatness allowance accommodates declared small absolute changes/curvature near zero loss; it does not let a large isolated excursion pass through a zero median. The optional train score also bounds its maximum detrended residual by `train_score_min_delta`. Nonfinite intermediate statistics fail as invalid input even when every raw number was finite; overflowing arithmetic cannot silently certify a plateau. A noisy result needs more clean evidence or diagnosis, not a forced plateau label. Historical results produced by older code retain their original decisions; replays under changed guard code must be labeled as such.
+
 Results:
 
 - `continue`: gives a concrete reason; training controller may continue only within remaining resources.

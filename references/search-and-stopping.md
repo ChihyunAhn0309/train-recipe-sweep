@@ -38,6 +38,18 @@ Find **actual learning progress first**: compare against the untrained/reheaded 
 
 Record optimizer updates, samples/tokens seen, dataset passes and equivalent epochs. Define an epoch under replacement sampling or mixtures; streaming data may only have step/token budgets. Batch changes make raw epochs a poor comparison on their own.
 
+## Adaptive horizon cross-check with existing trials
+
+Minimum LR does not establish an upper bound on every candidate's saturation time. Apply [horizon review](horizon-review.md) within each convergence family: preselect two distinct recipe configurations from the actual sweep, normally the minimum-LR anchor and source-derived target baseline. When these resolve identically, run once and choose another existing representative; when the baseline belongs to a different family, use a justified source-nearest representative in this family. A different seed, label, cap or stopping threshold alone is not a second recipe. Keep the original baseline in its own declared comparison.
+
+Start the anchor first and reuse its actual metrics/checkpoints; the second participant is an ordinary registered sweep candidate. With the bundled controller it runs after the existing anchor gate. An alternative scheduler can overlap bounded evidence collection only through tested integration. Do not require completed cross-check evidence before the two participants can generate it. Early unrelated probes may proceed conservatively within their declared scope; do not use an unsupported shared horizon to prune slow learners or claim saturation calibration of all recipes.
+
+Compare observed plateau exposures using prespecified task-appropriate tolerances and consistent evaluation/stopping semantics. Review validation improvement after the proposed horizon, schedule events, noise and learning diagnostics as well as duration. Matching caps, flat nonlearning curves or early candidate rankings do not establish agreement. If the pair agrees, use the later observed exposure as a provisional reference and retain every candidate's own stopping/continuation checks. If evidence conflicts, cannot resolve a delayed trajectory, or a material regime changes, review a preselected third existing candidate where feasible; split/revise families or horizon policy if needed. A third candidate cannot erase the original counterexample by majority vote.
+
+Extra compute is the additional training/evaluation beyond each trial's already planned exposure, plus any new probes; past work is reused and counted once. Pair reuse need not add training, but protecting an otherwise pruned candidate or waiting on a slow run can increase GPU time or wall time. Admit additional tails only within the common budget and finishing reserve. Do not force three full runs, rerun calibration separately, or promise zero overhead. If the pair remains unresolved within budget, preserve `horizon_transfer_status` as pending/inconclusive/disagreement with evidence and use a labeled bounded diagnostic result. A single-candidate search cannot establish cross-recipe transfer.
+
+The [horizon helper](../scripts/horizon_review.py) evaluates supplied histories; it does not schedule or extend training. A complete handoff must integrate its decisions with the actual registry and budget gates. The existing controller's `saturation_calibration_complete` reports anchor outcomes only and does not automatically certify this cross-check.
+
 ## Extensible horizons without changing the experiment
 
 Choose a schedule before starting:
@@ -67,7 +79,7 @@ At every evaluation, call saturation only if **all** hold:
 3. Across K consecutive assessments, compare two adjacent W-evaluation windows of fixed-probe train loss. Absolute median relative change and within-window fitted trend are both below tolerance; large worsening or oscillations fail this criterion. Reject windows with noise above its predeclared cap. Optional train score must also be flat.
 4. No cumulative validation improvement greater than min_delta over P evaluations; compare against the last meaningful best, so many small improvements can accumulate. Selection still saves the actual best checkpoint independently of the patience threshold.
 
-These are empirical stopping rules, not a proof of global convergence. Save values supporting the decision. The included guard implements this conservative rule and distinguishes insufficient history, no learning, schedule guard, high noise and budget exhaustion.
+These are empirical stopping rules, not a proof of global convergence. Save values supporting the decision. The included guard implements this conservative rule and distinguishes insufficient history, no learning, schedule guard, high noise and budget exhaustion. It checks maximum detrended residual as well as MAD so an isolated loss spike cannot disappear inside median-based windows; see the [guard guide](guard-tool.md) for the exact limits.
 
 Near-zero loss needs particular care: relative change can remain large even when the absolute improvement is practically irrelevant. Predeclare an absolute loss-change tolerance alongside the relative one, using the actual loss reduction/normalization. The helper supports `max(absolute_tolerance, relative_tolerance * window_loss_scale)` and a corresponding optional absolute noise cap. Default omitted absolute tolerances remain zero for compatibility. Changing a stopping tolerance after seeing a run is a study-policy revision; retrospective replay must be labeled counterfactual and cannot rewrite the run's observed stop epoch.
 

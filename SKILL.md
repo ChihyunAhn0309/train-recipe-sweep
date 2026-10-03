@@ -55,14 +55,16 @@ Classify every relevant axis as `sweep / fixed / conditional / excluded`, with b
 
 For applicable techniques whose transfer is uncertain, compare source-enabled settings against disabled controls within budget, including multi-scale when present. Any decision to fix or omit an ablatable technique needs a method-specific reason; omission from an initial implementation is not a reason to silently drop it. Preserve the compatible source-derived baseline and declare interacting/conditional factors. Reconcile the ledger against compiled trial configs so a listed on/off sweep cannot pass as scheduled when one state is absent. Report planned versus actually completed coverage separately.
 
-## 5. Use the minimum-LR trial as the first convergence search
+## 5. Calibrate convergence and cross-check the horizon
 
 For each model × data split × method/rank × important scheduler/batch family, register the smallest **positive** LR candidate as a real trial. With multiple LR groups, include the minimum scale for each defined LR ratio; use separate anchors for incomparable small-LR combinations.
 
 - Start with minimum-LR anchors using the baseline's other settings. Their checkpoints, metrics and cost belong to the sweep. Do not repeat the same run from scratch just for calibration.
+- Cross-check each family's horizon using two distinct existing recipes: its minimum-LR anchor and source-derived baseline, or a prespecified same-family representative if those coincide or the baseline belongs to another family. Follow [adaptive horizon review](references/horizon-review.md); reuse registered trials and retain individual stopping decisions. Request a third representative only when conflicting or unresolved evidence warrants its incremental cost.
 - An LR too small to begin learning is not saturation. Check learning progress, gradients/updates, completed warmup, pending scheduler changes, training loss and validation trends together.
 - Use observed saturation steps/epochs to initialize other trial horizons, not as a mandatory ceiling. Extend improving trials within budget; stop earlier when the declared criteria are satisfied.
 - If a cap arrives before convergence, report `budget_exhausted` or `right_censored`, not a saturation epoch. Add anchors when introducing a lower LR.
+- Keep anchor saturation and `horizon_transfer_status` separate. Start the bounded runs needed to create evidence; a pending cross-check must not deadlock its own bootstrap. Until supported, use conservative declared horizons/grace and report uncertainty. Fast mode may finish with an explicit inconclusive cross-check within its budget, never a fabricated pass.
 - Preserve the historical LR trajectory. Changing a linear-decay, cosine or one-cycle horizon that determines previous LR values creates a different trial.
 
 Evaluate convergence at every evaluation. Use task-specific absolute and relative change criteria, including near-zero losses. The standard-library [sweep_guard.py](scripts/sweep_guard.py) helps with identities and conservative plateau decisions. It is not a trainer or GPU scheduler: configure numerical thresholds and external diagnostics before integrating it. Read the [guard guide](references/guard-tool.md).

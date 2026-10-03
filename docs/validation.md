@@ -4,7 +4,7 @@ This page distinguishes reproducible software checks from target-specific traini
 
 ## Reproducible checks
 
-The current suite contains **163 unittest cases**: the previous 130 cases plus 33 fast-search cases. The original suite passed the [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) on **Ubuntu and Windows with Python 3.11 and 3.13**. The workflow tests the current suite, CPU demos and repository checks in that four-job matrix; the README badge links to current results. A historical run is evidence for its own commit, not later changes.
+The v0.2.0 suite contained **163 unittest cases**; the current suite additionally covers adaptive horizon review and sparse-loss-spike rejection. The exact current count is printed by the command below and by CI. The original suite passed the [initial public CI run](https://github.com/ChihyunAhn0309/train-recipe-sweep/actions/runs/36980198256) on **Ubuntu and Windows with Python 3.11 and 3.13**. The workflow tests the current suite, CPU demos and repository checks in that four-job matrix; the README badge links to current results. A historical run is evidence for its own commit, not later changes.
 
 ```sh
 python -B -m unittest discover -s scripts -p "test_*.py" -v
@@ -17,6 +17,7 @@ python tools/run_cpu_demo.py --output ./demo-run
 | Trial identity | Full SHA-256, immutable config, duplicate-key/nonfinite rejection, schedule/config changes. |
 | Source recipe coverage | Unreviewed source keys, stale hashes, missing rank decisions, unjustified missing on/off controls, unrealized conditional branches and differences from compiled configs. |
 | Convergence | Learned versus stagnant trajectories, warmup/schedule guards, near-zero thresholds and censoring. |
+| Horizon transfer | Raw-history replay for distinct existing recipes, comparable family/exposure, conditional third evidence, numeric LR identity, plateau revocation, censoring and separate calibration/transfer outcomes. |
 | Assets and budgets | Actual loader paths, hash/size checks, interrupted state and accumulated cost persistence. |
 | Document transport | Reconstructable content, hashes, portable names, traversal/collision rejection, literal argv. |
 | Controller | Atomic claims, anchor gating, confirmations, valid result reuse, concurrent device ownership, physical accounting, bounded stop/resume. |
@@ -25,6 +26,18 @@ python tools/run_cpu_demo.py --output ./demo-run
 | GPU gate schema | Missing, stale and incompatible evidence rejected; source/config/device scope changes invalidate acceptance. |
 
 The CPU demo launches real subprocesses with synthetic outputs. Its scores and device-seconds are protocol fixtures, not model quality or GPU-hours.
+
+## Adaptive horizon review checks
+
+The [horizon review helper](../references/horizon-review.md) replays raw histories through the plateau guard. Its fixtures test reuse of two existing recipes, coincident baseline/anchor roles, conditional third evidence, immutable identity/family mismatches, comparable exposure, censored/stalled/pruned results and late-learning counterexamples. Prespecified duration agreement uses the later observed plateau as the provisional review point; evidence that the shorter anchor horizon was insufficient remains visible. An agreeing pair does not require a third full training run.
+
+Independent review found sparse loss/optional-score spikes that the existing median-based checks could miss, nonfinite intermediate statistics from finite extreme inputs, and invalid or duplicate effective LR vectors caused by floating-point underflow, overflow or rounding. The corresponding regressions exercise the guard and resolved group-LR validation. Deep malformed JSON produces the documented structured CLI error. These are synthetic behavior checks, not new measured model-training results.
+
+The final independent code recheck passed 633 assertions per Windows interpreter (Python 3.11 and 3.13), including 600 duration-order/tolerance/third-participant combinations. Original counterexamples were rerun after repairs, along with near-zero absolute-tolerance and valid low-noise cases. The rechecked helper SHA-256 was `e0d12af6217b4d37949a9c5bddeff66f4b401d7d4936f52dce07fd7b34806561`; the plateau guard was `f7c15cc9cb247292680324e00ccef6018d631e8bd0236f9210788c5e9c46f2bb`. No actionable issue remained in that reviewed scope. This is independent development review, not third-party certification.
+
+A separate forward-testing session passed 61 independent API scenarios and nine CLI executions, including realistic Full FT/LoRA family planning, identical anchor/baseline reuse, different-optimizer rejection and matched representative selection. The complete 219-case regression suite passed locally on Windows Python 3.11 and 3.13 after repairs, along with both documented CPU demos and the horizon CLI fixture. The public CI run establishes its own exact commit/platform results.
+
+Run the [documented horizon fixture](../references/horizon-review.md#runnable-cpu-fixture-inputs) to inspect an actual CLI decision. It reuses supplied histories and launches no training. A complete model-specific handoff must separately test real scheduler dispatch, deduplication, continuation, budget accounting and target-GPU integration. This helper does not automatically change the generic controller or fast scheduler.
 
 ## Fast-mode checks
 

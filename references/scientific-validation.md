@@ -56,6 +56,7 @@ Use outcome fields linked to evidence instead of one ambiguous `passed` or `opti
 - `source_recipe_recovery`: recovered, partial or proposed; provenance and unknowns.
 - `baseline_evaluated`: valid local baseline on the declared target setting.
 - `saturation_calibration_complete`: observed plateau for every required anchor; capped/stalled anchors do not pass.
+- `horizon_transfer_status`: per-family cross-check of distinct existing recipes, with selected IDs, raw-history/policy hashes and unresolved counterexamples; anchor saturation alone cannot mark it supported. See [horizon review](horizon-review.md). This is within-seed duration evidence, not independent-seed confirmation or a guarantee for untested candidates.
 - `best_observed`: best valid candidate actually evaluated; omitted axes/boundaries.
 - `fresh_seed_confirmation_complete`: registered baseline/finalist runs and aggregate, with uncertainty/scope.
 - `official_reproduction_verified`: matched source setting and tolerances; never inferred from LR overlap.

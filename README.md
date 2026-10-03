@@ -22,7 +22,7 @@ A Codex skill for researching checkpoints and training baselines, auditing groun
 | Reconcile every source setting | Resolve config inheritance, defaults and pipeline code; map every source field to each method's target decision, including multi-scale and enabled/disabled controls. |
 | Adapt the model | Replace incompatible heads, train the full model for Full FT, and separate head/backbone or head/adapter learning rates. |
 | Research LoRA | Find model-specific references and resolve actual module paths, trainable state, scaling and per-rank baselines. |
-| Calibrate convergence | Run minimum-positive-LR anchors as actual sweep trials, reuse their results, and distinguish stagnation from learning followed by saturation. |
+| Calibrate convergence | Reuse minimum-positive-LR anchors and a distinct same-family baseline/representative; cross-check their observed horizons and investigate conflicting evidence only when needed. |
 | Search within budget | Declare finite axes, stop converged trials early, extend improving trials within limits, and reserve finalist confirmation capacity. |
 | Transfer or execute | Deliver a reconstructable document, or measure the target GPU and run with durable identities, budgets and recovery. |
 | Report | Compare each method against its baseline with validation performance, seed variation, cost, throughput and search coverage. |
@@ -40,6 +40,12 @@ The [recipe coverage checker](scripts/recipe_coverage.py) detects unmapped sourc
 Follow [scientific validation](references/scientific-validation.md) when comparing recipes. Published ranges and code defaults are not necessarily the winning official recipe. Evaluate a source-derived target baseline, then compare baseline and finalists on matched fresh seeds. Keep exploratory winning-seed scores outside confirmation aggregates. Best observed, confirmed, source-reproduced and GPU-verified are separate claims.
 
 For later-stage candidates, [study_extend.py](scripts/study_extend.py) retains completed anchors, results and cumulative costs. The model-specific adapter freezes selection and generates trials; the helper does not select winners or authorize a larger budget.
+
+### Cross-check convergence without duplicate training
+
+Each convergence family reuses two distinct recipes already in the sweep: its minimum-LR anchor and source-derived baseline, or a prespecified same-family representative. Their measured plateaus inform a provisional horizon; each later trial still has its own stopping decision. A third representative is reviewed only when conflicting or unresolved evidence warrants it. Capped, stalled or pruned runs cannot certify saturation, and a third agreeing result cannot erase an observed late-learning counterexample.
+
+The [horizon review helper](references/horizon-review.md) replays raw metric histories through the plateau guard and reports anchor calibration separately from horizon transfer. It does not launch training. Extra cost is any newly protected/extended training plus evaluation; reusing already planned trials avoids duplicate training but does not guarantee zero additional wall time. Fast mode may return an explicitly unresolved cross-check within its budget. Complete GPU handoffs must supply and test the model-specific scheduler integration.
 
 ### Opt-in fast search
 

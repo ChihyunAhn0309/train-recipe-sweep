@@ -170,6 +170,54 @@ class PlateauTests(unittest.TestCase):
         result = plateau_decision(policy(), rows)
         self.assertEqual(result["reason"], "validation_still_improving_or_patience_pending")
 
+    def test_isolated_symmetric_loss_spike_is_not_a_plateau(self):
+        stop = policy(window=3, confirmations=1, val_patience=3, min_step=0,
+                      warmup_end_step=0, schedule_guard_step=0,
+                      eval_every_steps=10, hard_cap_step=200,
+                      train_rel_delta=0.001, train_noise_rel_max=0.001)
+        rows = [{"step": i * 10, "train_loss": loss,
+                 "val_score": min(0.2 + 0.1 * i, 0.5),
+                 "diagnostics_ok": True, "schedule_clear": True}
+                for i, loss in enumerate([2, 1.5, 1, .5, .5, .5, .5, 100, .5])]
+        result = plateau_decision(stop, rows)
+        self.assertEqual(result["reason"], "train_probe_too_noisy")
+        evidence = result["details"]["assessments"][0]
+        self.assertEqual(evidence["absolute_mad"], 0)
+        self.assertGreater(evidence["absolute_max_residual"], evidence["loss_noise_limit"])
+
+    def test_small_isolated_noise_within_declared_limit_can_saturate(self):
+        rows = history()
+        rows[-3]["train_loss"] += 0.00001
+        self.assertEqual(plateau_decision(policy(), rows)["status"], "saturated")
+
+    def test_finite_losses_cannot_hide_nonfinite_intermediate_slope(self):
+        stop = policy(window=3, confirmations=1, val_patience=3, min_step=0,
+                      warmup_end_step=0, schedule_guard_step=0,
+                      eval_every_steps=10, hard_cap_step=200)
+        losses = [1.7e308, 1.5e308, 1.2e308, 1e308, 1e308, 1e308, 1.4e308, 0, 1e308]
+        rows = [{"step": i * 10, "train_loss": loss, "val_score": min(i * .1, .5),
+                 "diagnostics_ok": True, "schedule_clear": True}
+                for i, loss in enumerate(losses)]
+        with self.assertRaisesRegex(ValueError, "finite"):
+            plateau_decision(stop, rows)
+
+    def test_isolated_train_score_drop_is_not_a_plateau(self):
+        stop = policy(window=3, confirmations=1, val_patience=3, min_step=0,
+                      warmup_end_step=0, schedule_guard_step=0,
+                      eval_every_steps=10, hard_cap_step=200,
+                      train_score_direction="max", train_score_min_delta=0.001)
+        rows = [{"step": i * 10, "train_loss": loss,
+                 "val_score": min(0.2 + 0.1 * i, 0.5),
+                 "train_score": 0.1 if i == 7 else 0.8,
+                 "diagnostics_ok": True, "schedule_clear": True}
+                for i, loss in enumerate([2, 1.5, 1, .5, .5, .5, .5, .5, .5])]
+        result = plateau_decision(stop, rows)
+        self.assertEqual(result["reason"], "train_score_not_flat")
+        evidence = result["details"]["assessments"][0]
+        self.assertEqual(evidence["train_score_change"], 0)
+        self.assertEqual(evidence["train_score_trend"], 0)
+        self.assertGreater(evidence["train_score_max_residual"], 0.6)
+
     def test_raw_best_is_independent_of_patience_delta(self):
         rows = history()
         rows[-1]["val_score"] = 0.8001

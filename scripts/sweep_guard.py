@@ -123,13 +123,19 @@ def validate_policy(policy):
 def _slope(values, steps):
     center_x, center_y = statistics.mean(steps), statistics.mean(values)
     denominator = sum((x - center_x) ** 2 for x in steps)
-    return sum((x - center_x) * (y - center_y)
-               for x, y in zip(steps, values)) / denominator
+    numerator = sum((x - center_x) * (y - center_y)
+                    for x, y in zip(steps, values))
+    _number(numerator, "intermediate slope numerator")
+    _number(denominator, "intermediate slope denominator")
+    if denominator <= 0:
+        raise ValueError("Invalid slope denominator")
+    return _number(numerator / denominator, "intermediate slope")
 
 
 def _trend(values, steps):
     """Absolute fitted change over window span, not a confidence interval."""
-    return abs(_slope(values, steps)) * (steps[-1] - steps[0])
+    return _number(abs(_slope(values, steps)) * (steps[-1] - steps[0]),
+                   "intermediate fitted trend")
 
 
 def _residual_mad(values, steps):
@@ -137,8 +143,21 @@ def _residual_mad(values, steps):
     slope = _slope(values, steps)
     residuals = [value - slope * (step - steps[0])
                  for step, value in zip(steps, values)]
+    _check_json(residuals)
     center = statistics.median(residuals)
-    return statistics.median(abs(value - center) for value in residuals)
+    return _number(statistics.median(abs(value - center) for value in residuals),
+                   "intermediate residual MAD")
+
+
+def _residual_max(values, steps):
+    """Do not let a sparse loss spike disappear inside a median-based noise test."""
+    slope = _slope(values, steps)
+    residuals = [value - slope * (step - steps[0])
+                 for step, value in zip(steps, values)]
+    _check_json(residuals)
+    center = statistics.median(residuals)
+    return _number(max(abs(value - center) for value in residuals),
+                   "intermediate maximum residual")
 
 
 def plateau_decision(policy, records):
@@ -184,6 +203,7 @@ def plateau_decision(policy, records):
     details = {"best_val_score": best["val_score"], "best_step": best["step"]}
 
     def decision(reason, saturated=False):
+        _check_json(details)
         exhausted = step >= policy["hard_cap_step"] and not saturated
         return {
             "status": "saturated" if saturated else
@@ -214,7 +234,8 @@ def plateau_decision(policy, records):
         return decision("guard_not_clear_through_confirmation_windows")
 
     losses = [row["train_loss"] for row in records]
-    best_smoothed_loss = min(statistics.median(losses[i:i + window])
+    best_smoothed_loss = min(_number(statistics.median(losses[i:i + window]),
+                                    "intermediate smoothed loss")
                              for i in range(len(losses) - window + 1))
     scale0 = max(abs(losses[0]), policy["loss_scale_floor"])
     progress = (losses[0] - best_smoothed_loss) / scale0
@@ -239,18 +260,25 @@ def plateau_decision(policy, records):
         newer = eligible[end - window:end]
         old_loss = [row["train_loss"] for row in older]
         new_loss = [row["train_loss"] for row in newer]
-        scale = max(abs(statistics.median(old_loss)), policy["loss_scale_floor"])
-        change = abs(statistics.median(old_loss) - statistics.median(new_loss)) / scale
+        old_center = _number(statistics.median(old_loss), "intermediate old loss median")
+        new_center = _number(statistics.median(new_loss), "intermediate new loss median")
+        scale = max(abs(old_center), policy["loss_scale_floor"])
+        change = _number(abs(old_center - new_center) / scale, "intermediate loss change")
         trend = max(_trend([row["train_loss"] for row in part],
                            [row["step"] for row in part]) for part in (older, newer)) / scale
         noise = max(_residual_mad([row["train_loss"] for row in part],
                                   [row["step"] for row in part])
                     for part in (older, newer)) / scale
+        max_noise = max(_residual_max([row["train_loss"] for row in part],
+                                      [row["step"] for row in part])
+                        for part in (older, newer))
         assessment = {"end_step": newer[-1]["step"], "relative_change": change,
                       "relative_trend": trend, "relative_mad": noise,
                       "absolute_change": change * scale,
                       "absolute_trend": trend * scale,
                       "absolute_mad": noise * scale,
+                      "absolute_max_residual": max_noise,
+                      "relative_max_residual": max_noise / scale,
                       "loss_flatness_limit": max(policy.get("train_abs_delta", 0.0),
                                                   policy["train_rel_delta"] * scale),
                       "loss_noise_limit": max(policy.get("train_noise_abs_max", 0.0),
@@ -263,14 +291,22 @@ def plateau_decision(policy, records):
                               for part in (older, newer))
             assessment["train_score_change"] = score_change
             assessment["train_score_trend"] = score_trend
+            assessment["train_score_max_residual"] = max(
+                _residual_max([row["train_score"] for row in part],
+                              [row["step"] for row in part]) for part in (older, newer))
+        _check_json(assessment)
         assessments.append(assessment)
     details["assessments"] = assessments
-    if any(item["absolute_mad"] > item["loss_noise_limit"] for item in assessments):
+    if any(item["absolute_mad"] > item["loss_noise_limit"] or
+           item["absolute_max_residual"] > max(item["loss_noise_limit"],
+                                               item["loss_flatness_limit"])
+           for item in assessments):
         return decision("train_probe_too_noisy")
     if any(max(item["absolute_change"], item["absolute_trend"]) > item["loss_flatness_limit"]
            for item in assessments):
         return decision("train_loss_not_flat")
-    if optional_score and any(max(item["train_score_change"], item["train_score_trend"]) >
+    if optional_score and any(max(item["train_score_change"], item["train_score_trend"],
+                                 item["train_score_max_residual"]) >
                               policy["train_score_min_delta"] for item in assessments):
         return decision("train_score_not_flat")
     if age < policy["val_patience"]:

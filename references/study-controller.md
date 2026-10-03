@@ -149,6 +149,12 @@ All six top-level gates must have `status=passed` and nonempty hashed underlying
 
 Hashes establish declared evidence integrity, **not truth or current hardware state**. The skill/operator must review original measurements and re-probe the target at invocation (driver/environment, available allocated UUIDs, asset/GT audit, real forward/backward and save/reload/resume, recovery, representative throughput/peaks, bounded OOM policy, all-method/confirmation budget feasibility). An invented document with hashes is still invented evidence. Acceptance-schema fixture tests exercise rejection logic only; they never assert these real gates passed. Controller reports therefore keep `gpu_validation_claim=false`; an actual validated training report must separately link the real evidence.
 
+## Adaptive horizon review integration
+
+The controller's existing anchor gate and `saturation_calibration_complete` cover registered anchor outcomes only. They do not certify cross-recipe duration agreement. Apply [horizon review](horizon-review.md) in the model-specific study adapter: pin participant selection outside immutable configs, dispatch the anchor and second existing recipe through normal gates, collect raw histories, and persist the review before using it for broad horizon/pruning decisions. Keep it possible to run the bounded participants while their review is pending.
+
+The ordinary controller does not consume horizon-helper requests or selectively resume a completed/pruned trial. A request for more evidence must pass the real scheduler's budget, continuation and identity rules. Use a tested adapter or a justified stage revision; do not mutate old roles/configs or reset the registry to force dispatch. Report per-family transfer status separately from anchor calibration. A complete handoff tests supported, disagreement, censored and identical-role scenarios together with retained spending and checkpoint reuse.
+
 ## Reports and known boundaries
 
 `report.json` preserves trial/attempt statuses, reasons, valid result/resume locations, integrity-verified evaluated metrics/artifacts, cumulative physical and attributed method costs, and calibration state. Pending trials carry budget/anchor/device blockers. `all_trials_terminal` and `saturation_calibration_complete` are separate; neither says an optimal recipe was found. Finalist selection, seed uncertainty, validation-only ranking and final test policy remain the model-specific study adapter's responsibility.
